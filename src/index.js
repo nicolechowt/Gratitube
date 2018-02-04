@@ -9,7 +9,7 @@ const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
 
 
 // Create a new component. This component should produce some HTML.
-// everytime the we set the state, it will cause our component to 
+// Everytime the we set the state, it will cause our component to 
 // re-render.
 class App extends Component {
 	constructor(props){
@@ -19,19 +19,30 @@ class App extends Component {
 			videos: [],
 			selectedVideo: null
 		};
-		YTSearch({key: API_KEY, term: "surfboards"}, (videos) => {
+	this.videoSearch("inspirational talks");		
+	}
+
+	videoSearch(term) {
+		YTSearch({key: API_KEY, term: term}, (videos) => {
 			this.setState({ 
 				videos: videos,
 				selectedVideo: videos[0]
 			});
 			// this.setState({videos: videos:})
-		});
+		});	
 	}
 // passing onVideoSelect as a property 
+// selectedVideo is a function that just updates app state
+// videoList takes the onVideoSelect property
+// then gets passes into VideoListItem
+
+// remember anything after the component name is the 
+// property and can be accessed through .props
+
 	render() {
 		return (
 			<div>
-				<SearchBar />
+				<SearchBar onSearchTermChange={term => this.videoSearch(term)}/>
 				<VideoDetail video={this.state.selectedVideo}/>
 				<VideoList 
 				onVideoSelect={selectedVideo => this.setState({selectedVideo})}
