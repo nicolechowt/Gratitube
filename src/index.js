@@ -5,9 +5,17 @@ import YTSearch from "youtube-api-search";
 import SearchBar from "./components/search_bar";
 import VideoList from "./components/video_list";
 import VideoDetail from "./components/video_detail";
+import WebFont from 'webfontloader';
+import './index.css';
+
 
 const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
 
+WebFont.load({
+  google: {
+    families: ['Julius Sans One', 'Oswald']
+  }
+});
 
 // Create a new component. This component should produce some HTML.
 // Everytime the we set the state, it will cause our component to 
@@ -32,6 +40,13 @@ class App extends Component {
 			// this.setState({videos: videos:})
 		});	
 	}
+
+	componentWillMount(){
+    	document.body.style.backgroundColor = "#ffe600";
+	}
+	componentWillUnmount(){
+    	document.body.style.backgroundColor = null;
+	}
 // passing onVideoSelect as a property 
 // selectedVideo is a function that just updates app state
 // videoList takes the onVideoSelect property
@@ -45,12 +60,16 @@ class App extends Component {
 		const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 300);
 
 		return (
-			<div>
-				<SearchBar onSearchTermChange={videoSearch}/>
-				<VideoDetail video={this.state.selectedVideo}/>
-				<VideoList 
-				onVideoSelect={selectedVideo => this.setState({selectedVideo})}
-				videos={this.state.videos} />
+			<div className="application">
+				<div className="title">
+					<h1>NicoleTube</h1>
+					<p>A place of inspiring videos</p>
+				</div>
+						<SearchBar onSearchTermChange={videoSearch}/>
+						<VideoDetail video={this.state.selectedVideo}/>
+						<VideoList 
+						onVideoSelect={selectedVideo => this.setState({selectedVideo})}
+						videos={this.state.videos} />
 			</div>
 		);
 	}	
