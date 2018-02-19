@@ -34,17 +34,24 @@ class App extends Component {
 			selectedVideo: null,
 			opacity: 1,
 			height: "auto",
-			items: ["number1", "number2", "number3"],
-			itemNumber: 3
+			term: '',
+			items: [],
 		};
 	
 		this.videoSearch("inspirational talks");		
 	}
 
-	onAddItem(){
+	onChange = (event) => {
 		this.setState({
-			itemNumber: this.state.itemNumber +1,
-			items: this.state.items.concat([(this.state.itemNumber+1)])
+			term: event.target.value
+		});
+	}
+
+	onAddItem(){
+		event.preventDefault()
+		this.setState({
+			term: '',
+			items: [...this.state.items,this.state.term]
 		});
 	}
 
@@ -100,6 +107,7 @@ class App extends Component {
 				</div>
 
 
+
 				<div className="row">
                     <div className="s8 offset-s2 center-align">
                         <div className="card white z-depth-2"
@@ -120,14 +128,16 @@ class App extends Component {
 
 				<div className="row">
                     <div className="s8 offset-s2 center-align">
-                    	<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add Item</a>
+                    	<form className="form">
+                    		<input value={this.state.term} onChange={this.onChange} placeholder="List 3 things you are grateful for today."/>
+                    		<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add Item</a>
+                    	</form>
                     	<p>Click Item to Delete</p>
                     	<ul className="collection">
                     		<ReactCSSTransitionGroup 
                     			transitionName="fade"
                     			transitionEnterTimeout={300}
-                    			transitionLeaveTimeout={300}
-                    		>
+                    			transitionLeaveTimeout={300}>                   			
                     		{this.state.items.map((item,i) => {
                     			return (
                     				<li key={item} className="collection-item" onClick={this.onDeleteItem.bind(this,i)} style={{cursor: 'pointer'}}>{item}</li>
