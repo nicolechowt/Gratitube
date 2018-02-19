@@ -9,7 +9,7 @@ const VideoListItem = ({video, onVideoSelect}) => {
 
 	// const video = props.video;
 	return(
-		<li onClick={() => onVideoSelect(video)}className="list-group-item">
+		<li onClick={() => onVideoSelect(video)}className="list-group-item" style={{backgroundColor: "transparent"}}>
 			<div className="video-list media">
 
 				<div className="media-left">
