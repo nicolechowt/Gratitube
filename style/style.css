@@ -1,5 +1,5 @@
 .search-bar {
-	margin: 28px;
+	margin: 5px 15px 15px 15px;
 	text-align: center;
 }
 
@@ -24,4 +24,11 @@
 
 .list-group-item:hover{
 	background-color: #eee;
+}
+
+.heading {
+  font-weight: 700;
+}
+.subheading {
+  font-weight: 300;
 }
