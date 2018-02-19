@@ -5,6 +5,7 @@
 
 .search-bar input {
 	width: 75%;
+	background-color: transparent;
 }
 
 .video-item img {
@@ -20,6 +21,7 @@
 
 .list-group-item {
 	cursor: pointer;
+	background-color: #000000;
 }
 
 .list-group-item:hover{
