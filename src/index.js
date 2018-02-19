@@ -5,8 +5,9 @@ import YTSearch from "youtube-api-search";
 import SearchBar from "./components/search_bar";
 import VideoList from "./components/video_list";
 import VideoDetail from "./components/video_detail";
-import WebFont from 'webfontloader';
-import './index.css';
+import WebFont from "webfontloader";
+import "./index.css";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 
 const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
@@ -32,14 +33,33 @@ class App extends Component {
 			videos: [],
 			selectedVideo: null,
 			opacity: 1,
+			height: "auto",
+			items: ["number1", "number2", "number3"],
+			itemNumber: 3
 		};
 	
 		this.videoSearch("inspirational talks");		
 	}
 
+	onAddItem(){
+		this.setState({
+			itemNumber: this.state.itemNumber +1,
+			items: this.state.items.concat([(this.state.itemNumber+1)])
+		});
+	}
+
+	onDeleteItem(id){
+		const newItems = this.state.items.slice();
+		newItems.splice(id,1);
+		this.setState({
+			items: newItems
+		});
+	}
+
 	onHide(){
 		this.setState({
-			opacity: 0
+			opacity: 0,
+			height: 0
 		});
 	}
 
@@ -80,11 +100,10 @@ class App extends Component {
 				</div>
 
 
-
 				<div className="row">
                     <div className="s8 offset-s2 center-align">
                         <div className="card white z-depth-2"
-                             style={{...styles, opacity: this.state.opacity}}>
+                             style={{...styles, opacity: this.state.opacity, height: this.state.height}}>
                             <div className="card-content grey-text">
                                 <span className="card-title">Quote of The Day</span>
                                 <p>Only I can change my life. No one can do it for me.</p>
@@ -95,6 +114,27 @@ class App extends Component {
                             </div>
 
                         </div>
+                    </div>
+                </div>
+
+
+				<div className="row">
+                    <div className="s8 offset-s2 center-align">
+                    	<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add Item</a>
+                    	<p>Click Item to Delete</p>
+                    	<ul className="collection">
+                    		<ReactCSSTransitionGroup 
+                    			transitionName="fade"
+                    			transitionEnterTimeout={300}
+                    			transitionLeaveTimeout={300}
+                    		>
+                    		{this.state.items.map((item,i) => {
+                    			return (
+                    				<li key={item} className="collection-item" onClick={this.onDeleteItem.bind(this,i)} style={{cursor: 'pointer'}}>{item}</li>
+                    			);
+                    		})}
+                    		</ReactCSSTransitionGroup>
+                    	</ul>
                     </div>
                 </div>
 
