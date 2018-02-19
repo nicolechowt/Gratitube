@@ -11,6 +11,10 @@ import './index.css';
 
 const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
 
+const styles ={
+	transition: "all 1s ease-out"
+};
+
 WebFont.load({
   google: {
     families: ['Julius Sans One', 'Oswald']
@@ -26,9 +30,17 @@ class App extends Component {
 
 		this.state = { 
 			videos: [],
-			selectedVideo: null
+			selectedVideo: null,
+			opacity: 1,
 		};
-	this.videoSearch("inspirational talks");		
+	
+		this.videoSearch("inspirational talks");		
+	}
+
+	onHide(){
+		this.setState({
+			opacity: 0
+		});
 	}
 
 	videoSearch(term) {
@@ -43,6 +55,7 @@ class App extends Component {
 
 	componentWillMount(){
     	document.body.style.backgroundColor = "#ffe600";
+    	// document.body.style.backgroundImage = "linearGradient(-90deg, #B8C39D, #AEEFEE)";
 	}
 	componentWillUnmount(){
     	document.body.style.backgroundColor = null;
@@ -65,6 +78,28 @@ class App extends Component {
 					<h1>NicoleTube</h1>
 					<p>A place of inspiring videos</p>
 				</div>
+
+
+
+				<div className="row">
+                    <div className="s8 offset-s2 center-align">
+                        <div className="card white z-depth-2"
+                             style={{...styles, opacity: this.state.opacity}}>
+                            <div className="card-content grey-text">
+                                <span className="card-title">Quote of The Day</span>
+                                <p>Only I can change my life. No one can do it for me.</p>
+                            </div>
+
+                            <div className="card-action">
+                                <a onClick={this.onHide.bind(this)} style={{cursor: 'pointer', color: 'black'}}>HIDE</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
 						<SearchBar onSearchTermChange={videoSearch}/>
 						<VideoDetail video={this.state.selectedVideo}/>
 						<VideoList 
