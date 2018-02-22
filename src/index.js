@@ -7,7 +7,7 @@ import VideoList from "./components/video_list";
 import VideoDetail from "./components/video_detail";
 import WebFont from "webfontloader";
 import "./index.css";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import List from "./components/list";
 
 
 const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
@@ -21,6 +21,7 @@ WebFont.load({
     families: ['Julius Sans One', 'Oswald']
   }
 });
+
 
 // Create a new component. This component should produce some HTML.
 // Everytime the we set the state, it will cause our component to 
@@ -45,6 +46,13 @@ class App extends Component {
 		this.setState({
 			term: event.target.value
 		});
+	}
+
+	showList(){
+		console.log(this.state.items);
+		if (this.state.items.length>0){
+			return <List items={this.state.items} />;
+		}
 	}
 
 	onAddItem(){
@@ -130,35 +138,30 @@ class App extends Component {
                     <div className="s8 offset-s2 center-align">
                     	<form className="form">
                     		<input value={this.state.term} onChange={this.onChange} placeholder="List 3 things you are grateful for today."/>
-                    		<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add Item</a>
+                    		<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add</a>
                     	</form>
-                    	<p>Click Item to Delete</p>
-                    	<ul className="collection">
-                    		<ReactCSSTransitionGroup 
-                    			transitionName="fade"
-                    			transitionEnterTimeout={300}
-                    			transitionLeaveTimeout={300}>                   			
-                    		{this.state.items.map((item,i) => {
-                    			return (
-                    				<li key={item} className="collection-item" onClick={this.onDeleteItem.bind(this,i)} style={{cursor: 'pointer'}}>{item}</li>
-                    			);
-                    		})}
-                    		</ReactCSSTransitionGroup>
-                    	</ul>
+
+
+                    	{this.showList()}
+
                     </div>
                 </div>
 
 
 
-						<SearchBar onSearchTermChange={videoSearch}/>
-						<VideoDetail video={this.state.selectedVideo}/>
-						<VideoList 
-						onVideoSelect={selectedVideo => this.setState({selectedVideo})}
-						videos={this.state.videos} />
+				<SearchBar onSearchTermChange={videoSearch}/>
+				<VideoDetail video={this.state.selectedVideo}/>
+				<VideoList 
+				onVideoSelect={selectedVideo => this.setState({selectedVideo})}
+				videos={this.state.videos} />
 			</div>
 		);
 	}	
 };
 
+export const deleteFunction = () => {
+	// this.onDeleteItem.bind(this,i);
+	console.log("this " + this)
+}
 // Take this component's geneated HTML and put it on the page (in the DOM)
 ReactDOM.render(<App />, document.querySelector(".container"));
