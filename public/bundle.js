@@ -29961,9 +29961,21 @@
 
 			var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, props));
 
-			_this.onChange = function (event) {
+			_this.onChangeName = function (event) {
 				_this.setState({
-					term: event.target.value
+					name: event.target.value
+				});
+			};
+
+			_this.onChangeLocation = function (event) {
+				_this.setState({
+					location: event.target.value
+				});
+			};
+
+			_this.onChangeTerm = function (event) {
+				_this.setState({
+					thankfulItem: event.target.value
 				});
 			};
 
@@ -29973,8 +29985,10 @@
 				selectedVideo: null,
 				opacity: 1,
 				height: "auto",
-				term: '',
-				items: []
+				thankfulItem: '',
+				items: [],
+				name: '', //user name
+				location: ''
 			};
 
 			_this.itemSearch();
@@ -29989,36 +30003,55 @@
 				_axios2.default.get("/api/gratitudeItems/").then(function (res) {
 					var dataInArr = res.data;
 					dataInArr.map(function (obj) {
-						itemList.push(obj.name);
+						var itemObj = {};
+						itemObj.userName = obj.userName;
+						itemObj.name = obj.name;
+						itemObj.location = obj.location;
+						itemList.push(itemObj);
 					});
+					console.log("******");
+					console.log("data " + JSON.stringify(res.data));
 				}).then(function () {
+					console.log("item list before " + JSON.stringify(itemList));
 					here.setState({
 						items: itemList
 					});
 				});
 			}
 		}, {
-			key: "showList",
-			value: function showList() {
-				console.log(this.state.items);
-				if (this.state.items.length > 0) {
-					return _react2.default.createElement(_list2.default, { items: this.state.items });
-				}
-			}
-		}, {
 			key: "onAddItem",
 			value: function onAddItem() {
 				event.preventDefault();
 				var inputObj = {
-					"name": this.state.term
+					"name": this.state.thankfulItem,
+					"location": this.state.location,
+					"userName": this.state.name
 				};
 				this.setState({
-					term: '',
-					items: [].concat(_toConsumableArray(this.state.items), [this.state.term])
+					thankfulItem: '',
+					items: [].concat(_toConsumableArray(this.state.items), [inputObj])
 				});
 				_axios2.default.post('api/gratitudeItems', inputObj).then(function (res) {
 					return console.log("res is " + JSON.stringify(res));
 				});
+			}
+		}, {
+			key: "showList",
+			value: function showList() {
+
+				if (this.state.items.length > 5) {
+					this.state.items.splice(0, 1);
+				}
+
+				if (this.state.items.length > 0) {
+					return _react2.default.createElement(
+						"div",
+						null,
+						this.state.items.map(function (item, i) {
+							return _react2.default.createElement(_list2.default, { userName: item.userName, location: item.location, item: item.name, key: i });
+						})
+					);
+				}
 			}
 		}, {
 			key: "onDeleteItem",
@@ -30127,7 +30160,9 @@
 							_react2.default.createElement(
 								"form",
 								{ className: "form" },
-								_react2.default.createElement("input", { value: this.state.term, onChange: this.onChange, placeholder: "What are you grateful for?" }),
+								_react2.default.createElement("input", { value: this.state.name, onChange: this.onChangeName, placeholder: "Name" }),
+								_react2.default.createElement("input", { value: this.state.location, onChange: this.onChangeLocation, placeholder: "Where are you from?" }),
+								_react2.default.createElement("input", { value: this.state.thankfulItem, onChange: this.onChangeTerm, placeholder: "What are you grateful for?" }),
 								_react2.default.createElement(
 									"a",
 									{ className: "waves-effect waves-light btn", onClick: this.onAddItem.bind(this) },
@@ -30138,6 +30173,11 @@
 						_react2.default.createElement(
 							"div",
 							{ className: "col s4" },
+							_react2.default.createElement(
+								"h2",
+								null,
+								"What are people grateful for?"
+							),
 							this.showList()
 						)
 					),
@@ -43768,13 +43808,16 @@
 					transitionName: "fade",
 					transitionEnterTimeout: 300,
 					transitionLeaveTimeout: 300 },
-				props.items.map(function (item, i) {
-					return _react2.default.createElement(
-						"li",
-						{ key: item, className: "collection-item", style: { cursor: 'pointer' } },
-						item
-					);
-				})
+				_react2.default.createElement(
+					"li",
+					{ className: "collection-item" },
+					props.userName,
+					", from ",
+					props.location,
+					": \"",
+					props.item,
+					"\""
+				)
 			)
 		);
 	};

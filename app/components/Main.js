@@ -24,6 +24,7 @@ WebFont.load({
 });
 
 var itemList=[];
+
 export default class Main extends React.Component {
 	constructor(props){
 		super(props);
@@ -33,8 +34,10 @@ export default class Main extends React.Component {
 			selectedVideo: null,
 			opacity: 1,
 			height: "auto",
-			term: '',
-			items: []
+			thankfulItem: '',
+			items: [],
+			name: '', //user name
+			location: ''
 		};
 
 		this.itemSearch();
@@ -42,45 +45,60 @@ export default class Main extends React.Component {
 	}
 
 
-	onChange = (event) => {
+
+	onChangeName = (event) => {
 		this.setState({
-			term: event.target.value
+			name: event.target.value
 		});
 	}
+
+	onChangeLocation = (event) => {
+		this.setState({
+			location: event.target.value
+		});
+	}	
+
+	onChangeTerm = (event) => {
+		this.setState({
+			thankfulItem: event.target.value
+		});
+	}
+
 
 	itemSearch(){
 		const here = this;
 		axios.get("/api/gratitudeItems/")
 			.then(function (res){
 				const dataInArr = res.data;
-				dataInArr.map(obj => {								
-					itemList.push(obj.name);
+				dataInArr.map(obj => {	
+					var itemObj={};	
+					itemObj.userName=obj.userName;					
+					itemObj.name=obj.name;
+					itemObj.location=obj.location;
+					itemList.push(itemObj);
 				})
+				console.log("******");
+				console.log("data " + JSON.stringify(res.data));
+				
 			})
-			.then(function() {
+			.then(function(){
+				console.log("item list before " + JSON.stringify(itemList))
 				here.setState({
 					items: itemList
-				});
-			});
-	}
-
-
-
-	showList(){
-		console.log(this.state.items);
-		if (this.state.items.length>0){
-			return <List items={this.state.items} />;
-		}
+				})			
+			})
 	}
 
 	onAddItem(){
 		event.preventDefault()
 		const inputObj={
-			"name": this.state.term
+			"name": this.state.thankfulItem,
+			"location": this.state.location,
+			"userName": this.state.name
 		}
 		this.setState({
-			term: '',
-			items: [...this.state.items,this.state.term]
+			thankfulItem: '',
+			items: [...this.state.items, inputObj]
 		});
 		axios.post('api/gratitudeItems',inputObj)
 			.then(res =>
@@ -88,7 +106,23 @@ export default class Main extends React.Component {
 			)
 	}
 
+	showList(){
 
+    	if(this.state.items.length>5){
+    		this.state.items.splice(0,1);
+    	}
+
+		if(this.state.items.length>0){
+			return (
+				<div>
+					{this.state.items.map((item,i)=>{
+						return <List userName={item.userName} location={item.location} item={item.name} key={i}/>
+					})}
+				</div>
+				);
+		}
+	}
+			
 
 	onDeleteItem(id){
 		const newItems = this.state.items.slice();
@@ -115,10 +149,12 @@ export default class Main extends React.Component {
 		});	
 	}
 
+
 	componentWillMount(){
     	document.body.style.backgroundColor = "#ffe600";
     	// document.body.style.backgroundImage = "linearGradient(-90deg, #B8C39D, #AEEFEE)";
 	}
+
 	componentWillUnmount(){
     	document.body.style.backgroundColor = null;
 	}
@@ -149,13 +185,16 @@ export default class Main extends React.Component {
 				<div className="row">
 	                    <div className="col s4 offset-s2">
 	                     	<form className="form">
-	                    		<input value={this.state.term} onChange={this.onChange} placeholder="What are you grateful for?"/>
+	                    		<input value={this.state.name} onChange={this.onChangeName} placeholder="Name"/>	 
+								<input value={this.state.location} onChange={this.onChangeLocation} placeholder="Where are you from?"/>	                    		                    	
+	                    		<input value={this.state.thankfulItem} onChange={this.onChangeTerm} placeholder="What are you grateful for?"/>
 	                    		<a className="waves-effect waves-light btn" onClick={this.onAddItem.bind(this)}>Add</a>
 	                    	</form>
 	                    </div>
 
 	                     <div className="col s4">
-	                    	{this.showList()}
+	                     	<h2>What are people grateful for?</h2>
+	                		{this.showList()}
 	                    </div>
                 </div>
 

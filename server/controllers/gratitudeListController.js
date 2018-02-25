@@ -49,5 +49,5 @@ exports.delete_an_item = function(req,res){
 };
 
 exports.index = function(req,res){
-	res.send("<p>I am an API</p>");
+	res.send("<p>I am an API.</p>");
 }

@@ -25,7 +25,7 @@
 > npm start
 ```
 
-#### To generate new bundle.js
+### To generate new bundle.js
 ````
 > yarn dev
 ````
