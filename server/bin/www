@@ -1,0 +1,13 @@
+// Express can launch a www executable to handle certain tasks.
+// www goes in bin (sometimes .bin to keep it hidden)
+
+// This way, we can set certain properties here
+// rather than having them take up space in server.js.
+
+
+// we bring in the app we exported from server.js
+var app = require('../server');
+var port = process.env.PORT || 3000;
+
+app.listen(port);
+console.log("Gratitude List API server started on: " + port);

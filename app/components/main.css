@@ -1,0 +1,24 @@
+h1 {
+  font-family: 'Julius Sans One', sans-serif;
+  color: black;
+  font-size: 100px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  padding-top: 35px;
+}
+
+p {
+	font-family: 'Oswald';
+}
+
+.title {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: center;
+  text-align: center;
+}
+
+.title > * {
+  flex: 1 100%;
+}
+
