@@ -6,12 +6,11 @@ const List = props => (
 		<ReactCSSTransitionGroup 
 			transitionName="fade"
 			transitionEnterTimeout={300}
-			transitionLeaveTimeout={300}>                   			
-		{
-			props.items.map((item,i) => <li key={item} className="collection-item" style={{cursor: 'pointer'}}>{item}</li>)
-		}
+			transitionLeaveTimeout={300}> 
+			<li className="collection-item">{props.userName}, from {props.location}: "{props.item}"</li>
 		</ReactCSSTransitionGroup>
 	</ul>
 );
+
 
 export default List;

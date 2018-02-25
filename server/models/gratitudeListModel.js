@@ -8,6 +8,14 @@ var GratitudeListSchema = new Schema({
 		type: String,
 		required: "Enter one thing you are grateful for today."
 	},
+	location:{
+		type: String,
+		required: "Where are you from?"
+	},
+	userName:{
+		type: String,
+		required: "Name"
+	},
 	Created_date:{
 		type: Date,
 		default: Date.now
