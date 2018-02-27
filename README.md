@@ -1,8 +1,12 @@
-# Happy place
+# Gratitube
+A place to practice gratitude. Get away from all the negativity by seeing what others are grateful for. Get inspired by motivational talks. 
 
-## A place to be reflective. A place to get away from all the negativity in the world. 
+There is *always* something to be grateful for.
+
 [Live Link](https://polar-atoll-13536.herokuapp.com/)
 
+## About
+This full-stack web app is built with the MERN (MongoDB, Express, React, Node) stack.
 
 ## Tasks
 1) Used React to build a to-do list
