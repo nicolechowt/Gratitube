@@ -34,6 +34,7 @@
     "babel-preset-stage-1": "^6.1.18",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "fullpage-react": "^3.0.28",
     "lodash": "^3.10.1",
     "materialize-css": "^0.100.2",
     "mongoose": "^5.0.6",
@@ -46,6 +47,7 @@
     "react-router-dom": "^4.2.2",
     "redux": "^3.0.4",
     "style-loader": "^0.20.2",
+    "stylus-loader": "^3.0.2",
     "webfontloader": "^1.6.28",
     "youtube-api-search": "0.0.5"
   }

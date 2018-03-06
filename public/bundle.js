@@ -69,11 +69,23 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// Take this component's geneated HTML and put it on the page (in the DOM)
-
-
 	// Include the main Main Component
 	// Include the Main React Dependencies
+	var app = document.createElement('div');
+	document.body.appendChild(app);
+	document.body.style.margin = 0;
+
+	var meta = document.createElement('meta');
+	meta.setAttribute('http-equiv', 'X-UA-Compatible');
+	meta.setAttribute('content', 'IE=Edge');
+	document.getElementsByTagName('head')[0].appendChild(meta);
+
+	var meta2 = document.createElement('meta');
+	meta2.setAttribute('name', 'viewport');
+	meta2.setAttribute('content', 'width=device-width, initial-scale=1');
+	document.getElementsByTagName('head')[0].appendChild(meta2);
+
+	// Take this component's geneated HTML and put it on the page (in the DOM)
 	_reactDom2.default.render(_react2.default.createElement(_MainRouter2.default, null), document.getElementById("root"));
 
 /***/ }),
@@ -25456,16 +25468,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// *this works
-	// const MainRouter = () => 
-	//   <div>
-	// 	<Main />
-	//   </div>;
-
-	// export default MainRouter;
-	//*
-
-
 	var MainRouter = function (_Component) {
 		_inherits(MainRouter, _Component);
 
@@ -29929,15 +29931,66 @@
 
 	var _axios2 = _interopRequireDefault(_axios);
 
+	var _index = __webpack_require__(310);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var changeFullpageSlide = _index.Fullpage.changeFullpageSlide,
+	    changeHorizontalSlide = _index.Fullpage.changeHorizontalSlide;
+
+
+	__webpack_require__(323);
+	__webpack_require__(325);
+	__webpack_require__(327);
+
+	var fullPageOptions = {
+		// for mouse/wheel events
+		// represents the level of force required to generate a slide change on non-mobile, 0 is default
+		scrollSensitivity: 7,
+
+		// for touchStart/touchEnd/mobile scrolling
+		// represents the level of force required to generate a slide change on mobile, 0 is default
+		touchSensitivity: 7,
+		scrollSpeed: 500,
+		resetSlides: true,
+		hideScrollBars: true,
+		enableArrowKeys: true,
+
+		// optional, set the initial vertical slide
+		activeSlide: 0
+	};
+
+	var topNavStyle = {
+		textAlign: 'center',
+		position: 'fixed',
+		width: '100%',
+		cursor: 'pointer',
+		zIndex: 10,
+		backgroundColor: 'rgba(255, 255, 255, 0.4)',
+		top: '0px'
+	};
+
+	var horizontalNavStyle = {
+		position: 'absolute',
+		width: '100%',
+		top: '50%',
+		zIndex: 10
+	};
+
+	var horizontalSliderProps = {
+		name: 'horizontalSlider1',
+		infinite: true
+	};
 
 	var API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
 
@@ -29947,7 +30000,7 @@
 
 	_webfontloader2.default.load({
 		google: {
-			families: ['Julius Sans One', 'Oswald']
+			families: ['Playfair Display', 'Open Sans']
 		}
 	});
 
@@ -29988,15 +30041,45 @@
 				thankfulItem: '',
 				items: [],
 				name: '', //user name
-				location: ''
+				location: '',
+				active: {
+					Fullpage: 0,
+					horizontalSlider1: 0
+				}
 			};
 
 			_this.itemSearch();
 			_this.videoSearch("inspirational talks");
+			_this.onSlideChangeStart = _this.onSlideChangeStart.bind(_this);
+			_this.onSlideChangeEnd = _this.onSlideChangeEnd.bind(_this);
 			return _this;
 		}
 
 		_createClass(Main, [{
+			key: "onSlideChangeStart",
+			value: function onSlideChangeStart(name, props, state, newState) {
+				if (!this.horizontalNav) {
+					this.horizontalNav = document.getElementById('horizontal-nav');
+				}
+
+				if (name === 'horizontalSlider1') {
+					scrollNavStart(this.horizontalNav);
+				}
+			}
+		}, {
+			key: "onSlideChangeEnd",
+			value: function onSlideChangeEnd(name, props, state, newState) {
+				if (name === 'horizontalSlider1') {
+					scrollNavEnd(this.horizontalNav);
+				}
+
+				var oldActive = this.state.active;
+				var sliderState = _defineProperty({}, name, newState.activeSlide);
+
+				var updatedState = Object.assign(oldActive, sliderState);
+				this.setState(updatedState);
+			}
+		}, {
 			key: "itemSearch",
 			value: function itemSearch() {
 				var here = this;
@@ -30099,12 +30182,168 @@
 			value: function render() {
 				var _this3 = this;
 
+				var active = this.state.active;
+
+
+				var currentActive = active.Fullpage;
+				var prevSlide = changeFullpageSlide.bind(null, currentActive - 1);
+				var nextSlide = changeFullpageSlide.bind(null, currentActive + 1);
+				var goToTop = changeFullpageSlide.bind(null, 0);
+
+				var horizontalSliderName = horizontalSliderProps.name;
+				var horizontalActive = this.state.active[horizontalSliderName];
+
+				var prevHorizontalSlide = changeHorizontalSlide.bind(null, horizontalSliderName, horizontalActive - 1);
+				var nextHorizontalSlide = changeHorizontalSlide.bind(null, horizontalSliderName, horizontalActive + 1);
+
 				var videoSearch = _lodash2.default.debounce(function (term) {
 					_this3.videoSearch(term);
 				}, 300);
-				return _react2.default.createElement(
+
+				var topNav = _react2.default.createElement(
 					"div",
-					{ className: "application" },
+					{ style: topNavStyle },
+					_react2.default.createElement(
+						"span",
+						{ onClick: prevSlide },
+						_react2.default.createElement(
+							"button",
+							null,
+							"Previous Slide"
+						)
+					),
+					_react2.default.createElement(
+						"span",
+						{ onClick: goToTop },
+						_react2.default.createElement(
+							"button",
+							null,
+							"Back to Top"
+						)
+					),
+					_react2.default.createElement(
+						"span",
+						{ onClick: nextSlide },
+						_react2.default.createElement(
+							"button",
+							null,
+							"Next Slide"
+						)
+					)
+				);
+
+				var horizontalNav = _react2.default.createElement(
+					"div",
+					{ id: "horizontal-nav", style: horizontalNavStyle },
+					_react2.default.createElement(
+						"span",
+						{ onClick: prevHorizontalSlide },
+						_react2.default.createElement(
+							"a",
+							{ className: "cyan lighten-4 btn" },
+							"PREV"
+						)
+					),
+					_react2.default.createElement(
+						"span",
+						{ style: { position: 'absolute', right: '0px' }, onClick: nextHorizontalSlide },
+						_react2.default.createElement(
+							"a",
+							{ className: "cyan lighten-4 btn" },
+							"Next"
+						)
+					)
+				);
+
+				var horizontalSlides = [_react2.default.createElement(
+					_index.Slide,
+					{ style: { backgroundColor: '#FFE164' } },
+					_react2.default.createElement(
+						"div",
+						{ className: "container" },
+						_react2.default.createElement(
+							"div",
+							{ className: "row" },
+							_react2.default.createElement(
+								"div",
+								{ className: "col s10 offset-s1 card white z-depth-2 center-align",
+									style: _extends({}, styles, { opacity: this.state.opacity, height: this.state.height }) },
+								_react2.default.createElement(
+									"div",
+									{ className: "card-content grey-text" },
+									_react2.default.createElement(
+										"span",
+										{ className: "card-title" },
+										"Weekly Challenge"
+									),
+									_react2.default.createElement(
+										"p",
+										null,
+										"Vow to not complain, criticize, or gossip for a week.",
+										_react2.default.createElement("br", null),
+										_react2.default.createElement(
+											"br",
+											null,
+											"If you slip, rally your willpower and keep going."
+										),
+										" Notice how much energy you were spending on ",
+										_react2.default.createElement("br", null),
+										"negative thoughts."
+									)
+								)
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "row" },
+							_react2.default.createElement(
+								"div",
+								{ className: "col s10 offset-s1 center-align" },
+								_react2.default.createElement(
+									"h1",
+									null,
+									"Need some inspiration?"
+								),
+								_react2.default.createElement(
+									"h3",
+									null,
+									"Click next to see how the community is doing!",
+									_react2.default.createElement("br", null),
+									_react2.default.createElement("i", { className: "fa fa-angle-double-right" })
+								)
+							)
+						)
+					)
+				), _react2.default.createElement(
+					_index.Slide,
+					{ style: { backgroundColor: '#FFE164' } },
+					_react2.default.createElement(
+						"div",
+						{ className: "row" },
+						_react2.default.createElement(
+							"h1",
+							null,
+							"*Place Holder*"
+						),
+						_react2.default.createElement("br", null),
+						_react2.default.createElement(
+							"p",
+							null,
+							"-Amy"
+						)
+					)
+				)];
+				horizontalSliderProps.slides = horizontalSlides;
+
+				var horizontalSlider = _react2.default.createElement(
+					_index.HorizontalSlider,
+					_extends({ id: "horizontal-slider-1" }, horizontalSliderProps),
+					horizontalNav
+				);
+
+				var verticalSlides = [_react2.default.createElement(
+					_index.Slide,
+					{ style: { backgroundColor: '#FFE164' } },
 					_react2.default.createElement(
 						"div",
 						{ className: "title" },
@@ -30165,7 +30404,7 @@
 								_react2.default.createElement("input", { value: this.state.thankfulItem, onChange: this.onChangeTerm, placeholder: "What are you grateful for?" }),
 								_react2.default.createElement(
 									"a",
-									{ className: "waves-effect waves-light btn", onClick: this.onAddItem.bind(this) },
+									{ className: "cyan lighten-4 btn", onClick: this.onAddItem.bind(this) },
 									"Add"
 								)
 							)
@@ -30180,13 +30419,16 @@
 							),
 							this.showList()
 						)
-					),
+					)
+				), _react2.default.createElement(
+					_index.Slide,
+					{ style: { backgroundColor: '#F0F0EB' } },
 					_react2.default.createElement(
 						"div",
 						{ className: "row" },
 						_react2.default.createElement(
 							"div",
-							{ className: "col s8 offset-s2 center-align" },
+							{ className: "col s10 offset-s1 center-align" },
 							_react2.default.createElement(_search_bar2.default, { onSearchTermChange: videoSearch }),
 							_react2.default.createElement(_video_detail2.default, { video: this.state.selectedVideo }),
 							_react2.default.createElement(_video_list2.default, {
@@ -30196,7 +30438,10 @@
 								videos: this.state.videos })
 						)
 					)
-				);
+				), horizontalSlider];
+				fullPageOptions.slides = verticalSlides;
+
+				return _react2.default.createElement(_index.Fullpage, _extends({ onSlideChangeStart: this.onSlideChangeStart, onSlideChangeEnd: this.onSlideChangeEnd }, fullPageOptions));
 			}
 		}]);
 
@@ -30204,6 +30449,17 @@
 	}(_react2.default.Component);
 
 	exports.default = Main;
+
+
+	function scrollNavStart(nav) {
+		// make the nav fixed when we start scrolling horizontally
+		nav.style.position = 'fixed';
+	}
+
+	function scrollNavEnd(nav) {
+		// make the nav absolute when scroll finishes
+		nav.style.position = 'absolute';
+	}
 
 /***/ }),
 /* 270 */
@@ -44923,7 +45179,7 @@
 
 
 	// module
-	exports.push([module.id, "h1 {\n  font-family: 'Julius Sans One', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Oswald';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n", ""]);
+	exports.push([module.id, "h1, h2 {\n  font-family: 'Playfair Display', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Open Sans';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n", ""]);
 
 	// exports
 
@@ -45485,6 +45741,3537 @@
 		// send back the fixed css
 		return fixedCss;
 	};
+
+
+/***/ }),
+/* 310 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.HorizontalSlider = exports.Slide = exports.Fullpage = undefined;
+
+	var _Fullpage = __webpack_require__(311);
+
+	var _Fullpage2 = _interopRequireDefault(_Fullpage);
+
+	var _Slide = __webpack_require__(321);
+
+	var _Slide2 = _interopRequireDefault(_Slide);
+
+	var _HorizontalSlider = __webpack_require__(322);
+
+	var _HorizontalSlider2 = _interopRequireDefault(_HorizontalSlider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.Fullpage = _Fullpage2.default;
+	exports.Slide = _Slide2.default;
+	exports.HorizontalSlider = _HorizontalSlider2.default;
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _scrollSwipe = __webpack_require__(312);
+
+	var _scrollSwipe2 = _interopRequireDefault(_scrollSwipe);
+
+	var _windowOrGlobal = __webpack_require__(313);
+
+	var _windowOrGlobal2 = _interopRequireDefault(_windowOrGlobal);
+
+	var _reactFns = __webpack_require__(314);
+
+	var _utils = __webpack_require__(316);
+
+	var _Slide = __webpack_require__(321);
+
+	var _Slide2 = _interopRequireDefault(_Slide);
+
+	var _HorizontalSlider = __webpack_require__(322);
+
+	var _HorizontalSlider2 = _interopRequireDefault(_HorizontalSlider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var noOp = _utils.constants.noOp;
+	var KEY_IDX = _utils.renderUtils.KEY_IDX;
+
+
+	var _fp = {};
+	var global = {};
+
+	var TIMEOUT = 200;
+
+	var documentStub = function documentStub() {
+	  var style = {};
+	  return {
+	    querySelectorAll: function querySelectorAll() {
+	      return [_react2.default.createElement('div', null)];
+	    },
+	    documentElement: {
+	      style: style
+	    },
+	    body: {
+	      style: style
+	    }
+	  };
+	};
+
+	function generateState() {
+	  var activeSlide = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+	  return {
+	    activeSlide: activeSlide,
+	    lastActive: activeSlide - 1
+	  };
+	}
+
+	var Fullpage = function (_React$Component) {
+	  _inherits(Fullpage, _React$Component);
+
+	  function Fullpage(props) {
+	    _classCallCheck(this, Fullpage);
+
+	    var _this = _possibleConstructorReturn(this, (Fullpage.__proto__ || Object.getPrototypeOf(Fullpage)).call(this, props));
+
+	    var p = _this.props;
+
+	    global.window = _windowOrGlobal2.default;
+	    global.document = global.window.document || documentStub();
+
+	    if (p.infinite && p.resetSlides) {
+	      throw new Error('Fullpage Component cannot have both infinite and resetSlides as truthy props');
+	    }
+
+	    var slides = p.slides;
+
+
+	    if (!slides || !slides.length) {
+	      throw new Error('Please provide slides for Fullpage');
+	    }
+
+	    var horizontalMap = {};
+	    // generate state for horizontals;
+	    var horizontals = slides.reduce(function (result, s, i) {
+	      var name = s.props.name;
+
+
+	      if (s.props.slides && name) {
+	        result[name] = generateState(0);
+	        horizontalMap[i] = name;
+	      }
+
+	      return result;
+	    }, {});
+	    horizontals.horizontalMap = horizontalMap;
+
+	    var _p$activeSlide = p.activeSlide,
+	        activeSlide = _p$activeSlide === undefined ? 0 : _p$activeSlide,
+	        scrollSensitivity = p.scrollSensitivity,
+	        touchSensitivity = p.touchSensitivity,
+	        _p$scrollSpeed = p.scrollSpeed,
+	        scrollSpeed = _p$scrollSpeed === undefined ? 500 : _p$scrollSpeed;
+
+
+	    _this.name = 'Fullpage';
+	    _this.scrollSensitivity = scrollSensitivity;
+	    _this.touchSensitivity = touchSensitivity;
+	    _this.scrollSpeed = scrollSpeed;
+
+	    _this.node = null;
+	    _this.ss = null;
+	    _this.verticalRoot = determineVerticalRoot();
+
+	    _this.onHorizontalChange = p.onHorizontalChange || noOp;
+	    _this.onSlideChangeStart = p.onSlideChangeStart || noOp;
+	    _this.onSlideChangeEnd = p.onSlideChangeEnd || noOp;
+
+	    ['onScrollAction', 'onVerticalScroll', 'onHorizontalScroll', 'lockScroll', 'handleScroll', 'checkKey'].forEach(function (f) {
+	      return _this[f] = _this[f].bind(_this);
+	    });
+
+	    _this.isLocked = false;
+	    _this.hSlideCache = {};
+	    _this.cacheHslide = function (slide) {
+	      _this.hSlideCache[slide.name] = slide;
+	    };
+
+	    _fp = _this;
+
+	    _this.state = Object.assign({
+	      scrollPending: false,
+	      window: null,
+	      document: null
+	    }, horizontals, generateState(activeSlide));
+	    return _this;
+	  }
+
+	  _createClass(Fullpage, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      this.hideScrollBars();
+
+	      this.window = global.window;
+	      this.document = global.document;
+
+	      this.setState({
+	        window: global.window,
+	        document: global.document
+	      }, function () {
+	        _this2.lockScroll();
+	      });
+	    }
+	  }, {
+	    key: 'hideScrollBars',
+	    value: function hideScrollBars() {
+	      var hideScrollBars = this.props.hideScrollBars;
+
+
+	      if (!hideScrollBars) {
+	        return;
+	      }
+
+	      var document = global.document;
+
+	      document.documentElement.style.overflow = 'hidden';
+	      document.body.style.overflow = 'hidden';
+	    }
+	  }, {
+	    key: 'showScrollBars',
+	    value: function showScrollBars() {
+	      var document = global.document;
+
+	      document.documentElement.style.overflow = 'auto';
+	      document.body.style.overflow = 'auto';
+	    }
+	  }, {
+	    key: 'lockScroll',
+	    value: function lockScroll() {
+	      var node = this.node,
+	          checkKey = this.checkKey;
+	      var enableArrowKeys = this.props.enableArrowKeys;
+
+
+	      if (enableArrowKeys) {
+	        window.addEventListener('keydown', checkKey.bind(this));
+	      }
+
+	      var ss = new _scrollSwipe2.default({
+	        target: node,
+	        scrollSensitivity: this.scrollSensitivity,
+	        touchSensitivity: this.touchSensitivity,
+	        scrollPreventDefault: true,
+	        touchPreventDefault: true,
+	        scrollCb: this.onScrollAction,
+	        touchCb: this.onScrollAction
+	      });
+	      this.ss = ss;
+	      this.isLocked = true;
+	    }
+	  }, {
+	    key: 'onScrollAction',
+	    value: function onScrollAction(_ref) {
+	      var direction = _ref.direction,
+	          intent = _ref.intent,
+	          startEvent = _ref.startEvent;
+
+	      var s = this.state;
+	      var _ss = this.ss,
+	          ss = _ss === undefined ? ssStub() : _ss;
+
+
+	      if (s.scrollPending) {
+	        ss.flush();
+	        return ss.listen();
+	      }
+
+	      var dir = _utils.INTENT_MAP[direction];
+
+	      // at this point we are dedicating
+	      if (direction === 'VERTICAL') {
+	        return this.onVerticalScroll(dir[intent], startEvent);
+	      }
+
+	      var path = startEvent.path || startEvent.composedPath();
+
+	      if (!path) {
+	        var polyFillPath = (0, _utils.composedPath)(startEvent.target);
+	        path = polyFillPath;
+	      }
+
+	      var isHorizontal = path.find(function (p) {
+	        if (!p.dataset) {
+	          return false;
+	        }
+
+	        return p.dataset.slide === 'HorizontalSlider';
+	      });
+
+	      if (!isHorizontal) {
+	        ss.flush();
+	        return ss.listen();
+	      }
+
+	      this.onHorizontalScroll(dir[intent], isHorizontal);
+	    }
+	  }, {
+	    key: 'onVerticalScroll',
+	    value: function onVerticalScroll(intent) {
+	      var _this3 = this;
+
+	      var s = this.state;
+	      var window = s.window,
+	          activeSlide = s.activeSlide;
+	      var slides = this.props.slides;
+
+
+	      var next = intent === 'DOWN' ? activeSlide + 1 : activeSlide - 1;
+	      if (next < 0 || next > slides.length - 1) {
+	        var _ss2 = this.ss,
+	            ss = _ss2 === undefined ? ssStub() : _ss2;
+
+	        ss.flush();
+	        return ss.listen();
+	      }
+
+	      var to = next * window.innerHeight;
+	      var newState = {
+	        activeSlide: next,
+	        lastActive: activeSlide
+	      };
+
+	      this.setState({ scrollPending: true }, function () {
+	        _this3.handleScroll(_this3.verticalRoot, 'scrollTop', to, newState, _this3.name);
+	      });
+	    }
+	  }, {
+	    key: 'onHorizontalScroll',
+	    value: function onHorizontalScroll(intent, node) {
+	      var name = node.dataset.name;
+	      var activeSlide = this.state[name].activeSlide;
+
+	      var next = intent === 'RIGHT' ? activeSlide + 1 : activeSlide - 1;
+	      var innerWidth = this.state.window.innerWidth;
+	      var _ss3 = this.ss,
+	          ss = _ss3 === undefined ? ssStub() : _ss3;
+
+
+	      var comp = _fp.hSlideCache[name];
+	      var hp = comp.props;
+	      var infinite = hp.infinite;
+
+
+	      var nodes = (0, _utils.getNodes)(this.state.document, 'data-horizontal-slider="' + name + '"');
+
+	      var leftVal = activeSlide * innerWidth;
+	      var to = next * innerWidth;
+
+	      var result = this.determineHSlide(comp, activeSlide, next, leftVal, to, nodes);
+
+	      if (!result) {
+	        setTimeout(function () {
+	          ss.flush();
+	          ss.listen();
+	        }, TIMEOUT);
+	        return;
+	      }
+
+	      leftVal = result.leftVal;
+	      next = result.next;
+	      to = result.to;
+
+	      var newState = _defineProperty({}, name, {
+	        activeSlide: next,
+	        lastActive: activeSlide
+	      });
+
+	      this.handleHorizontal(name, node, nodes, leftVal, to, next, newState, infinite);
+	    }
+	  }, {
+	    key: 'determineHSlide',
+	    value: function determineHSlide(comp, activeSlide, next, leftVal, to, nodes) {
+	      var hp = comp.props;
+	      var infinite = hp.infinite,
+	          resetSlides = hp.resetSlides;
+	      var innerWidth = this.state.window.innerWidth;
+
+
+	      var len = nodes.length;
+
+	      var infStart = activeSlide === 0 && next === -1;
+	      var infEnd = activeSlide === len - 1 && next === len;
+
+	      if (!infinite && !resetSlides && (infStart || infEnd)) {
+	        return null;
+	      }
+
+	      if (infinite && infStart) {
+	        // simulate last <- 0
+	        next = len - 1;
+	        lastToFirst(nodes);
+	        leftVal = innerWidth;
+	        to = 0;
+	      } else if (infinite && infEnd) {
+	        // simulate last -> 0
+	        next = 0;
+	        lastToFirst(nodes);
+	        leftVal = 0;
+	        to = innerWidth;
+	      }
+
+	      var result = { next: next, leftVal: leftVal, to: to };
+	      return result;
+	    }
+	  }, {
+	    key: 'handleHorizontal',
+	    value: function handleHorizontal(name, node, nodes, leftVal, to, next, newState, infinite) {
+	      var _this4 = this;
+
+	      (0, _utils.showAll)(nodes);
+	      node.scrollLeft = leftVal;
+
+	      //show, reset window
+	      //scroll
+	      //hide
+
+	      this.setState({ scrollPending: true }, function () {
+	        _this4.handleScroll(node, 'scrollLeft', to, newState, name, function () {
+	          if (infinite) {
+	            firstToLast(nodes);
+	            node.scrollLeft = innerWidth * next;
+	          }
+	          (0, _utils.hideAllButActive)(next, nodes);
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'handleScroll',
+	    value: function handleScroll(node, winProp, to, newState, compName) {
+	      var _this5 = this;
+
+	      var cb = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : noOp;
+
+	      var ss = this.ss || ssStub();
+	      ss.flush();
+	      this.onSlideChangeStart(compName, this.props, this.state, newState[compName] || newState);
+
+	      (0, _utils.scrollTo)(node, winProp, to, this.scrollSpeed, function () {
+	        newState.scrollPending = false;
+	        _this5.setState(newState, function () {
+	          cb();
+	          _this5.onSlideChangeEnd(compName, _this5.props, _this5.state, newState[compName] || newState);
+	          setTimeout(function () {
+	            ss.flush();
+	            ss.listen();
+	          }, TIMEOUT);
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      var ss = this.ss || ssStub();
+	      ss.killAll();
+	      this.ss = null;
+
+	      var window = this.state.window;
+
+
+	      if (this.props.enableArrowKeys) {
+	        window.removeEventListener('keydown', this.checkKey);
+	      }
+	    }
+	  }, {
+	    key: 'checkKey',
+	    value: function checkKey(e) {
+	      var direction = KEY_IDX[e.keyCode];
+	      if (!direction) {
+	        return;
+	      }
+
+	      var intent = direction === 'UP' || direction === 'LEFT' ? -1 : 1;
+	      var context = direction === 'UP' || direction === 'DOWN' ? 'VERTICAL' : 'HORIZONTAL';
+
+	      if (context === 'VERTICAL') {
+	        Fullpage.changeFullpageSlide(this.state.activeSlide + intent);
+	        return;
+	      }
+
+	      var horizontalName = this.state.horizontalMap[this.state.activeSlide];
+	      if (!horizontalName) {
+	        return;
+	      }
+
+	      var activeSlide = this.state[horizontalName].activeSlide;
+
+	      Fullpage.changeHorizontalSlide(horizontalName, activeSlide + intent);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this6 = this;
+
+	      var s = this.state;
+	      var p = this.props;
+	      var window = s.window,
+	          document = s.document,
+	          activeSlide = s.activeSlide;
+
+
+	      var children = p.children || null;
+
+	      if (!window) {
+	        return children;
+	      }
+
+	      var elements = p.slides.reduce(function (result, sl) {
+	        if (!sl) {
+	          return result;
+	        }
+
+	        if (typeof sl.type !== 'function') {
+	          result.other.push(sl);
+	        } else {
+	          result.slides.push(sl);
+	        }
+
+	        return result;
+	      }, { slides: [], other: [] });
+
+	      var other = elements.other,
+	          slides = elements.slides;
+
+	      // TODO: sub other for children
+
+	      return _react2.default.createElement(_reactFns.WindowSize, {
+	        render: function render(_ref2) {
+	          var width = _ref2.width,
+	              height = _ref2.height;
+
+
+	          var to = activeSlide * height;
+	          setTimeout(function () {
+	            _this6.verticalRoot.scrollTop = to;
+	          }, 0);
+
+	          return _react2.default.createElement(
+	            'div',
+	            { ref: function ref(node) {
+	                return _this6.node = node;
+	              }, className: 'Fullpage' },
+	            children,
+	            other.map(function (o, i) {
+	              var op = o.props || {};
+	              return _react2.default.createElement('div', _extends({ key: i }, op));
+	            }),
+	            slides.map(function (sl, i) {
+	              var sp = sl.props || {};
+	              var children = sp.children;
+
+	              if (sp.slides) {
+	                var name = sp.name;
+
+	                return _react2.default.createElement(
+	                  _HorizontalSlider2.default,
+	                  _extends({ cache: _this6.cacheHslide.bind(_this6), width: width, height: height, window: window, document: document, activeSlide: s[name].activeSlide, hideScrollBars: p.hideScrollBars }, sp, { key: i }),
+	                  children
+	                );
+	              }
+
+	              return _react2.default.createElement(
+	                _Slide2.default,
+	                _extends({ render: true, className: sp.className || '', id: sp.id, width: width, height: height, key: i }, sp),
+	                children
+	              );
+	            })
+	          );
+	        }
+	      });
+	    }
+	  }], [{
+	    key: 'changeHorizontalSlide',
+	    value: function changeHorizontalSlide(name, next) {
+	      next = +next;
+
+	      var comp = _fp.hSlideCache[name];
+	      if (!comp) {
+	        throw Error('cannt find HorizontalSlider by name', name);
+	      }
+
+	      var node = comp.node,
+	          props = comp.props;
+	      var infinite = props.infinite;
+
+	      var eligible = isElibile(next, props, _fp.state);
+
+	      if (!eligible) {
+	        return;
+	      }
+
+	      var activeSlide = _fp.state[name].activeSlide;
+
+
+	      var nodes = (0, _utils.getNodes)(_fp.state.document, 'data-horizontal-slider="' + name + '"');
+	      var leftVal = activeSlide * innerWidth;
+	      var to = next * innerWidth;
+
+	      var result = _fp.determineHSlide.call(_fp, comp, activeSlide, next, leftVal, to, nodes);
+
+	      leftVal = result.leftVal;
+	      next = result.next;
+	      to = result.to;
+
+	      var newState = _defineProperty({}, name, {
+	        activeSlide: next,
+	        lastActive: activeSlide
+	      });
+
+	      _fp.handleHorizontal.call(_fp, name, node, nodes, leftVal, to, next, newState, infinite);
+	    }
+	  }, {
+	    key: 'changeFullpageSlide',
+	    value: function changeFullpageSlide(idx) {
+	      var _fp2 = _fp,
+	          props = _fp2.props,
+	          state = _fp2.state,
+	          name = _fp2.name,
+	          verticalRoot = _fp2.verticalRoot;
+	      var activeSlide = state.activeSlide,
+	          window = state.window;
+
+
+	      var eligible = isElibile(idx, props, state);
+
+	      if (!eligible) {
+	        return;
+	      }
+
+	      var newState = {
+	        activeSlide: idx,
+	        lastActive: activeSlide
+	      };
+
+	      var to = idx * window.innerHeight;
+
+	      _fp.setState({ scrollPending: true }, function () {
+	        _fp.onSlideChangeStart(name, props, state, newState);
+	        _fp.handleScroll(verticalRoot, 'scrollTop', to, newState, name);
+	      });
+	    }
+	  }]);
+
+	  return Fullpage;
+	}(_react2.default.Component);
+
+	function swap(nodes, o, i) {
+	  nodes[o || i].parentNode.insertBefore(nodes[i], nodes[o]);
+	  return nodes;
+	}
+
+	function lastToFirst(nodes) {
+	  swap(nodes, 0, nodes.length - 1);
+	}
+
+	function firstToLast(nodes) {
+	  swap(nodes, null, nodes.length - 1);
+	}
+
+	function isElibile(idx, props, state) {
+	  var slides = props.slides;
+	  var activeSlide = state.activeSlide;
+
+
+	  if (state.scrollPending) {
+	    return false;
+	  }
+
+	  if (props.infinite) {
+	    return true;
+	  }
+
+	  if (idx > slides.length - 1 || idx < 0) {
+	    return false;
+	  }
+
+	  if (idx == activeSlide) {
+	    return false;
+	  }
+
+	  return true;
+	}
+
+	function ssStub() {
+	  return {
+	    flush: noOp,
+	    killAll: noOp,
+	    listen: noOp
+	  };
+	}
+
+	function determineVerticalRoot() {
+	  var agent = void 0;
+
+	  var document = global.document;
+
+
+	  if (typeof navigator !== 'undefined' && navigator) {
+	    agent = navigator.userAgent;
+	  }
+
+	  if (!agent) {
+	    return document.body;
+	  }
+
+	  var browser = (0, _utils.detectBrowser)(agent);
+
+	  if (!browser) {
+	    return document.body;
+	  }
+
+	  // NOTE: various browsers and devTools handle this differently as the userAgent source of truth
+	  // To get the root scrollable element we have to play around with OS and browser to find the right
+	  // root to return. If need be we can be specific about version
+
+	  var name = browser.name,
+	      version = browser.version,
+	      os = browser.os;
+
+	  var _version$split = version.split('.'),
+	      _version$split2 = _slicedToArray(_version$split, 3),
+	      major = _version$split2[0],
+	      minor = _version$split2[1],
+	      patch = _version$split2[2];
+
+	  var docElementSet = new Set(['firefox', 'chrome', 'crios' // chrome ios
+	  ]);
+
+	  if (docElementSet.has(name)) {
+	    return document.documentElement;
+	  }
+
+	  // safari, etc
+	  return document.body;
+	}
+	exports.default = Fullpage;
+
+/***/ }),
+/* 312 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;;(function(root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory();
+	  } else {
+	    root.ScrollSwipe = factory();
+	  }
+	}(this, function() {
+	'use strict';
+
+	var VERTICAL = 'VERTICAL';
+	var HORIZONTAL = 'HORIZONTAL';
+
+	var acceptedParams = {
+	  target: true,
+	  scrollSensitivity: true,
+	  touchSensitivity: true,
+	  scrollCb: true,
+	  touchCb: true,
+	  scrollPreventDefault: true,
+	  touchPreventDefault: true
+	};
+
+	if (true) {
+	  module.exports = ScrollSwipe;
+	}
+
+	function ScrollSwipe(opts) {
+	  var _this = this;
+
+	  Object.keys(opts).forEach(function (key) {
+	    if (acceptedParams[key]) {
+	      _this[key] = opts[key];
+	      return;
+	    }
+
+	    throw new Error('unknown options for ScrollSwipe: ' + key);
+	  });
+
+	  if (!opts.target) {
+	    throw new Error('must provide DOM target element to ScrollSwipe');
+	  }
+
+	  if (!this.scrollSensitivity || this.scrollSensitivity < 0) {
+	    this.scrollSensitivity = 0;
+	  }
+
+	  if (!this.touchSensitivity || this.touchSensitivity < 0) {
+	    this.touchSensitivity = 0;
+	  }
+
+	  this.startTouchEvent = null;
+	  this.latestTouchEvent = null;
+	  this.latestTouch = null;
+
+	  this.startScrollEvent = null;
+	  this.latestScrollEvent = null;
+	  this.latestScroll = null;
+
+	  this.intent = 0;
+	  this.currentDirection = VERTICAL;
+	  this.touchArr = [];
+	  this.xArr = [];
+	  this.yArr = [];
+	  this.touchArrX = [];
+	  this.touchArrY = [];
+
+	  this.scrollPending = false;
+
+	  //these should only init if true
+	  if (this.scrollCb) {
+	    this.initScroll();
+	  }
+
+	  if (this.touchCb) {
+	    this.initTouch();
+	  }
+
+	  return this;
+	}
+
+	ScrollSwipe.prototype.listen = function listen() {
+	  this.flush();
+	  this.scrollPending = false;
+	  return this;
+	};
+
+	ScrollSwipe.prototype.onWheel = function onWheel(e) {
+	  var _this2 = this;
+
+	  if (this.scrollPreventDefault) {
+	    e.preventDefault();
+	  }
+
+	  if (this.scrollPending) {
+	    return;
+	  }
+
+	  this.startScrollEvent = e;
+
+	  var x = e.deltaX;
+	  var y = e.deltaY;
+
+	  this.addXScroll(x);
+	  this.addYScroll(y);
+
+	  this.scrollFulfilled(function (fulfilled, direction, intent) {
+	    if (!fulfilled) {
+	      return;
+	    }
+
+	    _this2.lockout();
+	    _this2.latestScrollEvent = e;
+
+	    var result = {
+	      startEvent: e,
+	      lastEvent: _this2.latestScrollEvent,
+	      scrollPending: _this2.scrollPending,
+	      direction: direction,
+	      intent: intent
+	    };
+
+	    _this2.scrollCb(result);
+	    _this2.undoLockout();
+	  });
+	};
+
+	ScrollSwipe.prototype.initScroll = function initScroll() {
+	  this.newOnWheel = this.onWheel.bind(this);
+
+	  if (this.target && this.target.addEventListener) {
+	    this.target.addEventListener('wheel', this.newOnWheel, false);
+	  }
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.touchMove = function touchMove(e) {
+	  if (this.touchPreventDefault) {
+	    e.preventDefault();
+	  }
+
+	  var changedTouches = e.changedTouches[0];
+	  var x = changedTouches.clientX;
+	  var y = changedTouches.clientY;
+
+	  this.startTouchEvent = e;
+	  this.addXTouch(x);
+	  this.addYTouch(y);
+	};
+
+	ScrollSwipe.prototype.touchEnd = function touchEnd(e) {
+	  var _this3 = this;
+
+	  this.touchFulfilled(e, function (fulfilled, direction, intent) {
+	    if (!fulfilled) {
+	      return;
+	    }
+
+	    var result = {
+	      startEvent: _this3.startTouchEvent,
+	      lastEvent: _this3.latestTouchEvent,
+	      scrollPending: _this3.scrollPending,
+	      direction: direction,
+	      intent: intent
+	    };
+
+	    _this3.touchCb(result);
+	  });
+	};
+
+	ScrollSwipe.prototype.initTouch = function initTouch() {
+	  this.newTouchMove = this.touchMove.bind(this);
+	  this.newTouchEnd = this.touchEnd.bind(this);
+
+	  if (this.target && this.target.addEventListener) {
+	    this.target.addEventListener('touchmove', this.newTouchMove, false);
+	    this.target.addEventListener('touchend', this.newTouchEnd, false);
+	  }
+
+	  return this;
+	};
+
+	//touch events
+	ScrollSwipe.prototype.touchFulfilled = function touchFulfilled(e, cb) {
+	  if (!e) {
+	    throw new Error('must provide event to touchFulfilled');
+	  }
+
+	  if (!cb) {
+	    throw new Error('must provide callback to touchFulfilled');
+	  }
+
+	  var touchSensitivity = this.touchSensitivity,
+	      touchArrX = this.touchArrX,
+	      touchArrY = this.touchArrY;
+
+
+	  var bool = touchArrX.length > touchSensitivity && touchArrY.length > touchSensitivity;
+
+	  if (!bool) {
+	    return cb(false, null);
+	  }
+
+	  var changedTouches = e.changedTouches[0];
+
+	  var xStart = touchArrX[0];
+	  var yStart = touchArrY[0];
+
+	  var xEnd = changedTouches.clientX;
+	  var yEnd = changedTouches.clientY;
+
+	  var xIntent = xStart < xEnd ? 0 : 1;
+	  var yIntent = yStart < yEnd ? 0 : 1;
+
+	  var direction = VERTICAL;
+
+	  //determine vertical or horizontal based on the greatest difference
+	  if (Math.abs(xStart - xEnd) > Math.abs(yStart - yEnd)) {
+	    direction = HORIZONTAL;
+	  }
+
+	  var intent = direction === VERTICAL ? yIntent : xIntent;
+
+	  swap.call(this, intent, direction);
+	  this.resetTouches();
+	  this.scrollPending = true;
+	  this.latestTouchEvent = e;
+
+	  cb(this.scrollPending, this.currentDirection, this.currentIntent);
+	  return this;
+	};
+
+	ScrollSwipe.prototype.getTouch = function getTouch(idx) {
+	  return this.touchArr[idx];
+	};
+
+	ScrollSwipe.prototype.addXTouch = function addTouch(touch) {
+	  if (this.pending()) {
+	    return this;
+	  }
+
+	  this.latestTouch = touch;
+	  this.touchArrX.push(touch);
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.addYTouch = function addTouch(touch) {
+	  if (this.pending()) {
+	    return this;
+	  }
+
+	  this.latestTouch = touch;
+	  this.touchArrY.push(touch);
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.resetTouches = function resetTouches() {
+	  this.touchArrX = [];
+	  this.touchArrY = [];
+	  return this;
+	};
+
+	//wheel events
+	ScrollSwipe.prototype.addXScroll = function addXScroll(s) {
+	  if (this.pending()) {
+	    return this;
+	  }
+
+	  this.latestScroll = s;
+	  this.xArr.push(s);
+	  return this;
+	};
+
+	ScrollSwipe.prototype.addYScroll = function addYScroll(s) {
+	  if (this.pending()) {
+	    return this;
+	  }
+
+	  this.latestScroll = s;
+	  this.yArr.push(s);
+	  return this;
+	};
+
+	ScrollSwipe.prototype.getDirection = function getDirection() {
+	  return this.currentDirection;
+	};
+
+	ScrollSwipe.prototype.resetScroll = function resetScroll() {
+	  this.xArr = [];
+	  this.yArr = [];
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.flush = function flush() {
+	  this.resetScroll();
+	  this.resetTouches();
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.lockout = function lockout() {
+	  this.originalAddXTouch = this.addXTouch;
+	  this.originalAddYTouch = this.addYTouch;
+
+	  this.originalAddXScroll = this.addXScroll;
+	  this.originalAddYScroll = this.addYScroll;
+
+	  this.addXScroll = function () {};
+	  this.addYScroll = function () {};
+	  this.addXTouch = function () {};
+	  this.addYTouch = function () {};
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.undoLockout = function undoLockout() {
+	  this.addXScroll = this.originalAddXScroll;
+	  this.addYScroll = this.originalAddYScroll;
+	  this.addXTouch = this.originalAddXTouch;
+	  this.addYTouch = this.originalAddYTouch;
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.scrollFulfilled = function scrollFulfilled(cb) {
+	  if (!cb) {
+	    throw new Error('must provide callback to scrollFulfilled');
+	  }
+
+	  var xArr = this.xArr,
+	      yArr = this.yArr,
+	      scrollSensitivity = this.scrollSensitivity;
+
+
+	  var bool = xArr.length > scrollSensitivity && yArr.length > scrollSensitivity;
+
+	  var _evalScrollDirection = this.evalScrollDirection(),
+	      direction = _evalScrollDirection.direction,
+	      intent = _evalScrollDirection.intent;
+
+	  if (bool) {
+	    swap.call(this, intent, direction);
+	    this.resetScroll();
+	    this.scrollPending = true;
+	  }
+
+	  cb(this.scrollPending, this.currentDirection, this.currentIntent);
+	  return this;
+	};
+
+	ScrollSwipe.prototype.evalScrollDirection = function evalScrollDirection() {
+	  var _getSums = this.getSums(),
+	      x = _getSums.x,
+	      y = _getSums.y,
+	      xIntent = _getSums.xIntent,
+	      yIntent = _getSums.yIntent;
+
+	  var direction = x > y ? HORIZONTAL : VERTICAL;
+	  var base = direction === VERTICAL ? yIntent : xIntent;
+
+	  var intent = 0;
+
+	  if (base > 0) {
+	    intent = 1;
+	  }
+
+	  return { direction: direction, intent: intent };
+	};
+
+	ScrollSwipe.prototype.getSums = function getSums() {
+	  var xArr = this.xArr,
+	      yArr = this.yArr;
+
+
+	  var xIntent = 0;
+	  var yIntent = 0;
+
+	  var x = xArr.reduce(function (result, curr) {
+	    xIntent = xIntent + curr;
+	    return result += Math.abs(curr);
+	  }, 0);
+
+	  var y = yArr.reduce(function (result, curr) {
+	    yIntent = yIntent + curr;
+	    return result += Math.abs(curr);
+	  }, 0);
+
+	  return { x: x, y: y, xIntent: xIntent, yIntent: yIntent };
+	};
+
+	ScrollSwipe.prototype.getScrollDirection = function getScrollDirection() {
+	  return this.currentDirection;
+	};
+
+	ScrollSwipe.prototype.pending = function pending() {
+	  return this.scrollPending;
+	};
+
+	ScrollSwipe.prototype.killScroll = function killScroll() {
+	  if (this.target && this.target.removeEventListener) {
+	    this.target.removeEventListener('wheel', this.newOnWheel, false);
+	  }
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.killTouch = function killTouch() {
+	  if (this.target && this.target.removeEventListener) {
+	    this.target.removeEventListener('touchmove', this.newTouchMove, false);
+	    this.target.removeEventListener('touchend', this.newTouchEnd, false);
+	  }
+
+	  return this;
+	};
+
+	ScrollSwipe.prototype.killAll = function teardown() {
+	  this.killScroll().killTouch();
+	  return this;
+	};
+
+	function swap(intent, direction) {
+	  this.previousIntent = this.currentIntent;
+	  this.currentIntent = intent;
+	  this.previousDirection = this.currentDirection;
+	  this.currentDirection = direction;
+	}
+	return ScrollSwipe;
+	}));
+
+
+/***/ }),
+/* 313 */
+/***/ (function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict'
+	module.exports = (typeof self === 'object' && self.self === self && self) ||
+	  (typeof global === 'object' && global.global === global && global) ||
+	  this
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ }),
+/* 314 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	var React = __webpack_require__(2);
+
+	/*! *****************************************************************************
+	Copyright (c) Microsoft Corporation. All rights reserved.
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+	this file except in compliance with the License. You may obtain a copy of the
+	License at http://www.apache.org/licenses/LICENSE-2.0
+
+	THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+	WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+	MERCHANTABLITY OR NON-INFRINGEMENT.
+
+	See the Apache Version 2.0 License for specific language governing permissions
+	and limitations under the License.
+	***************************************************************************** */
+	/* global Reflect, Promise */
+
+	var extendStatics = Object.setPrototypeOf ||
+	    ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	    function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+	function __extends(d, b) {
+	    extendStatics(d, b);
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	}
+
+	var __assign = Object.assign || function __assign(t) {
+	    for (var s, i = 1, n = arguments.length; i < n; i++) {
+	        s = arguments[i];
+	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+	    }
+	    return t;
+	};
+
+	var isEmptyChildren = function (children) {
+	    return React.Children.count(children) === 0;
+	};
+
+	function throttle(func, wait) {
+	    var timeout = null;
+	    var callbackArgs = null;
+	    var context = this;
+	    var later = function () {
+	        func.apply(context, callbackArgs);
+	        timeout = null;
+	    };
+	    return function () {
+	        if (!timeout) {
+	            callbackArgs = arguments;
+	            timeout = setTimeout(later, wait);
+	        }
+	    };
+	}
+
+	var supportsPassiveListener = false;
+	var noop = function () { };
+	try {
+	    var opts = Object.defineProperty({}, 'passive', {
+	        get: function () {
+	            supportsPassiveListener = true;
+	        },
+	    });
+	    window.addEventListener('testPassive', noop, opts);
+	    window.removeEventListener('testPassive', noop, opts);
+	}
+	catch (e) { }
+
+	var Scroll = (function (_super) {
+	    __extends(Scroll, _super);
+	    function Scroll() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = { x: 0, y: 0 };
+	        _this.handleWindowScroll = throttle(function () {
+	            _this.setState({ x: window.scrollX, y: window.scrollY });
+	        }, _this.props.throttle);
+	        return _this;
+	    }
+	    Scroll.prototype.componentDidMount = function () {
+	        this.handleWindowScroll();
+	        window.addEventListener('scroll', this.handleWindowScroll, supportsPassiveListener ? { passive: true } : false);
+	    };
+	    Scroll.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('scroll', this.handleWindowScroll);
+	    };
+	    Scroll.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    Scroll.defaultProps = {
+	        throttle: 100,
+	    };
+	    return Scroll;
+	}(React.Component));
+
+	var REACT_STATICS = {
+	    childContextTypes: true,
+	    contextTypes: true,
+	    defaultProps: true,
+	    displayName: true,
+	    getDefaultProps: true,
+	    mixins: true,
+	    propTypes: true,
+	    type: true,
+	};
+	var KNOWN_STATICS = {
+	    name: true,
+	    length: true,
+	    prototype: true,
+	    caller: true,
+	    callee: true,
+	    arguments: true,
+	    arity: true,
+	};
+	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+	var getPrototypeOf = Object.getPrototypeOf;
+	var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
+	var getOwnPropertyNames = Object.getOwnPropertyNames;
+	function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+	    if (typeof sourceComponent !== 'string') {
+	        if (objectPrototype) {
+	            var inheritedComponent = getPrototypeOf(sourceComponent);
+	            if (inheritedComponent && inheritedComponent !== objectPrototype) {
+	                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
+	            }
+	        }
+	        var keys = getOwnPropertyNames(sourceComponent);
+	        if (getOwnPropertySymbols) {
+	            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+	        }
+	        for (var i = 0; i < keys.length; ++i) {
+	            var key = keys[i];
+	            if (!REACT_STATICS[key] &&
+	                !KNOWN_STATICS[key] &&
+	                (!blacklist || !blacklist[key])) {
+	                if (propIsEnumerable.call(sourceComponent, key) ||
+	                    typeof sourceComponent[key] === 'function') {
+	                    try {
+	                        targetComponent[key] = sourceComponent[key];
+	                    }
+	                    catch (e) { }
+	                }
+	            }
+	        }
+	        return targetComponent;
+	    }
+	    return targetComponent;
+	}
+
+	function withScroll(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(Scroll, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var DeviceMotion = (function (_super) {
+	    __extends(DeviceMotion, _super);
+	    function DeviceMotion() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = {
+	            acceleration: {
+	                x: null,
+	                y: null,
+	                z: null,
+	            },
+	            accelerationIncludingGravity: {
+	                x: null,
+	                y: null,
+	                z: null,
+	            },
+	            rotationRate: {
+	                alpha: null,
+	                beta: null,
+	                gamma: null,
+	            },
+	            interval: 0,
+	        };
+	        _this.handleDeviceMotion = function (e) {
+	            _this.setState({
+	                acceleration: e.acceleration,
+	                accelerationIncludingGravity: e.accelerationIncludingGravity,
+	                rotationRate: e.rotationRate,
+	                interval: e.interval,
+	            });
+	        };
+	        return _this;
+	    }
+	    DeviceMotion.prototype.componentDidMount = function () {
+	        window.addEventListener('devicemotion', this.handleDeviceMotion, true);
+	    };
+	    DeviceMotion.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('devicemotion', this.handleDeviceMotion);
+	    };
+	    DeviceMotion.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    return DeviceMotion;
+	}(React.Component));
+
+	function withDeviceMotion(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(DeviceMotion, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var DeviceOrientation = (function (_super) {
+	    __extends(DeviceOrientation, _super);
+	    function DeviceOrientation() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = {
+	            alpha: null,
+	            beta: null,
+	            gamma: null,
+	            absolute: false,
+	        };
+	        _this.handleDeviceOrientation = function (e) {
+	            _this.setState({
+	                beta: e.beta,
+	                alpha: e.alpha,
+	                gamma: e.gamma,
+	                absolute: e.absolute,
+	            });
+	        };
+	        return _this;
+	    }
+	    DeviceOrientation.prototype.componentDidMount = function () {
+	        window.addEventListener('deviceorientation', this.handleDeviceOrientation, true);
+	    };
+	    DeviceOrientation.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('deviceorientation', this.handleDeviceOrientation);
+	    };
+	    DeviceOrientation.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    return DeviceOrientation;
+	}(React.Component));
+
+	function withDeviceOrientation(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(DeviceOrientation, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var Network = (function (_super) {
+	    __extends(Network, _super);
+	    function Network() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = { online: navigator.onLine };
+	        _this.handleOnline = function () {
+	            _this.setState({ online: true, offlineAt: undefined });
+	        };
+	        _this.handleOffline = function () {
+	            _this.setState({ online: false, offlineAt: new Date() });
+	        };
+	        return _this;
+	    }
+	    Network.prototype.componentDidMount = function () {
+	        if (typeof window !== 'undefined' && navigator) {
+	            this.setState({ online: navigator.onLine });
+	        }
+	        window.addEventListener('online', this.handleOnline);
+	        window.addEventListener('offline', this.handleOffline);
+	    };
+	    Network.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('online', this.handleOnline);
+	        window.removeEventListener('offline', this.handleOffline);
+	    };
+	    Network.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    return Network;
+	}(React.Component));
+
+	function withNetwork(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(Network, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var GeoPosition = (function (_super) {
+	    __extends(GeoPosition, _super);
+	    function GeoPosition() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = {
+	            isLoading: true,
+	        };
+	        _this.requestGeo = function () {
+	            _this.setState({ isLoading: true });
+	            _this.geoId = navigator.geolocation.watchPosition(function (position) {
+	                return _this.setState({
+	                    isLoading: false,
+	                    coords: {
+	                        latitude: position.coords.latitude,
+	                        longitude: position.coords.longitude,
+	                    },
+	                    error: undefined,
+	                });
+	            }, function (error) { return _this.setState({ error: error, isLoading: false }); });
+	        };
+	        return _this;
+	    }
+	    GeoPosition.prototype.componentDidMount = function () {
+	        this.requestGeo();
+	    };
+	    GeoPosition.prototype.componentWillUnmount = function () {
+	        navigator.geolocation.clearWatch(this.geoId);
+	    };
+	    GeoPosition.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    return GeoPosition;
+	}(React.Component));
+
+	function withGeoPosition(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(GeoPosition, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var M = __webpack_require__(315);
+	var Media = M;
+
+	var WindowSize = (function (_super) {
+	    __extends(WindowSize, _super);
+	    function WindowSize() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = { width: 0, height: 0 };
+	        _this.handleWindowSize = throttle(function () {
+	            _this.setState({ width: window.innerWidth, height: window.innerHeight });
+	        }, _this.props.throttle);
+	        return _this;
+	    }
+	    WindowSize.prototype.componentDidMount = function () {
+	        this.handleWindowSize();
+	        window.addEventListener('resize', this.handleWindowSize);
+	    };
+	    WindowSize.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('resize', this.handleWindowSize);
+	    };
+	    WindowSize.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    WindowSize.defaultProps = {
+	        throttle: 100,
+	    };
+	    return WindowSize;
+	}(React.Component));
+
+	function withWindowSize(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(WindowSize, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	var Locales = (function (_super) {
+	    __extends(Locales, _super);
+	    function Locales() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = { locale: _this.preferredLocales() };
+	        _this.handleLanguageChange = function () {
+	            _this.setState({
+	                locale: _this.preferredLocales(),
+	            });
+	        };
+	        return _this;
+	    }
+	    Locales.prototype.preferredLocales = function () {
+	        if (navigator.languages && navigator.languages.length > 0) {
+	            return Intl.getCanonicalLocales(navigator.languages)[0];
+	        }
+	        return Intl.getCanonicalLocales([navigator.language])[0];
+	    };
+	    Locales.prototype.componentDidMount = function () {
+	        window.addEventListener('languagechange', this.handleLanguageChange);
+	    };
+	    Locales.prototype.componentWillUnmount = function () {
+	        window.removeEventListener('languagechange', this.handleLanguageChange);
+	    };
+	    Locales.prototype.render = function () {
+	        var _a = this.props, render = _a.render, component = _a.component, children = _a.children;
+	        return component
+	            ? React.createElement(component, this.state)
+	            : render
+	                ? render(this.state)
+	                : children
+	                    ? typeof children === 'function'
+	                        ? children(this.state)
+	                        : !isEmptyChildren(children) ? React.Children.only(children) : null
+	                    : null;
+	    };
+	    return Locales;
+	}(React.Component));
+
+	function withLocales(Component$$1) {
+	    var S = function (props) {
+	        return (React.createElement(Locales, { render: function (p) { return React.createElement(Component$$1, __assign({}, props, p)); } }));
+	    };
+	    return hoistNonReactStatics(S, Component$$1);
+	}
+
+	exports.Scroll = Scroll;
+	exports.withScroll = withScroll;
+	exports.DeviceMotion = DeviceMotion;
+	exports.withDeviceMotion = withDeviceMotion;
+	exports.DeviceOrientation = DeviceOrientation;
+	exports.withDeviceOrientation = withDeviceOrientation;
+	exports.Network = Network;
+	exports.withNetwork = withNetwork;
+	exports.GeoPosition = GeoPosition;
+	exports.withGeoPosition = withGeoPosition;
+	exports.Media = Media;
+	exports.WindowSize = WindowSize;
+	exports.withWindowSize = withWindowSize;
+	exports.Locales = Locales;
+	exports.withLocales = withLocales;
+	//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+/* 315 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+	var React = _interopDefault(__webpack_require__(2));
+
+	function createCommonjsModule(fn, module) {
+		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	}
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 * 
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function () {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	var emptyFunction = function emptyFunction() {};
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function () {
+	  return this;
+	};
+	emptyFunction.thatReturnsArgument = function (arg) {
+	  return arg;
+	};
+
+	var emptyFunction_1 = emptyFunction;
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 *
+	 */
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	}
+
+	var invariant_1 = invariant;
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = emptyFunction_1;
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var printWarning = function printWarning(format) {
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+
+	    var argIndex = 0;
+	    var message = 'Warning: ' + format.replace(/%s/g, function () {
+	      return args[argIndex++];
+	    });
+	    if (typeof console !== 'undefined') {
+	      console.error(message);
+	    }
+	    try {
+	      // --- Welcome to debugging React ---
+	      // This error was thrown as a convenience so that you can use this stack
+	      // to find the callsite that caused this warning to fire.
+	      throw new Error(message);
+	    } catch (x) {}
+	  };
+
+	  warning = function warning(condition, format) {
+	    if (format === undefined) {
+	      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	    }
+
+	    if (format.indexOf('Failed Composite propType: ') === 0) {
+	      return; // Ignore CompositeComponent proptype check.
+	    }
+
+	    if (!condition) {
+	      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	        args[_key2 - 2] = arguments[_key2];
+	      }
+
+	      printWarning.apply(undefined, [format].concat(args));
+	    }
+	  };
+	}
+
+	var warning_1 = warning;
+
+	/*
+	object-assign
+	(c) Sindre Sorhus
+	@license MIT
+	*/
+
+	/* eslint-disable no-unused-vars */
+	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	function shouldUseNative() {
+		try {
+			if (!Object.assign) {
+				return false;
+			}
+
+			// Detect buggy property enumeration order in older V8 versions.
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+			test1[5] = 'de';
+			if (Object.getOwnPropertyNames(test1)[0] === '5') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test2 = {};
+			for (var i = 0; i < 10; i++) {
+				test2['_' + String.fromCharCode(i)] = i;
+			}
+			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+				return test2[n];
+			});
+			if (order2.join('') !== '0123456789') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test3 = {};
+			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+				test3[letter] = letter;
+			});
+			if (Object.keys(Object.assign({}, test3)).join('') !==
+					'abcdefghijklmnopqrst') {
+				return false;
+			}
+
+			return true;
+		} catch (err) {
+			// We don't expect any of the above to throw, but better to be safe.
+			return false;
+		}
+	}
+
+	var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+
+			if (getOwnPropertySymbols) {
+				symbols = getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+
+		return to;
+	};
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 */
+
+	var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+	var ReactPropTypesSecret_1 = ReactPropTypesSecret;
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var invariant$1 = invariant_1;
+	  var warning$1 = warning_1;
+	  var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
+	  var loggedTypeFailures = {};
+	}
+
+	/**
+	 * Assert that the values match with the type specs.
+	 * Error messages are memorized and will only be shown once.
+	 *
+	 * @param {object} typeSpecs Map of name to a ReactPropType
+	 * @param {object} values Runtime values that need to be type-checked
+	 * @param {string} location e.g. "prop", "context", "child context"
+	 * @param {string} componentName Name of the component for error messages.
+	 * @param {?Function} getStack Returns the component stack.
+	 * @private
+	 */
+	function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    for (var typeSpecName in typeSpecs) {
+	      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+	        var error;
+	        // Prop type validation may throw. In case they do, we don't want to
+	        // fail the render phase where it didn't fail before. So we log it.
+	        // After these have been cleaned up, we'll let them throw.
+	        try {
+	          // This is intentionally an invariant that gets caught. It's the same
+	          // behavior as without this statement except with a better message.
+	          invariant$1(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
+	          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
+	        } catch (ex) {
+	          error = ex;
+	        }
+	        warning$1(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+	        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+	          // Only monitor this failure once because there tends to be a lot of the
+	          // same error.
+	          loggedTypeFailures[error.message] = true;
+
+	          var stack = getStack ? getStack() : '';
+
+	          warning$1(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+	        }
+	      }
+	    }
+	  }
+	}
+
+	var checkPropTypes_1 = checkPropTypes;
+
+	var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
+	  /* global Symbol */
+	  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+	  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+	  /**
+	   * Returns the iterator method function contained on the iterable object.
+	   *
+	   * Be sure to invoke the function with the iterable as context:
+	   *
+	   *     var iteratorFn = getIteratorFn(myIterable);
+	   *     if (iteratorFn) {
+	   *       var iterator = iteratorFn.call(myIterable);
+	   *       ...
+	   *     }
+	   *
+	   * @param {?object} maybeIterable
+	   * @return {?function}
+	   */
+	  function getIteratorFn(maybeIterable) {
+	    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+	    if (typeof iteratorFn === 'function') {
+	      return iteratorFn;
+	    }
+	  }
+
+	  /**
+	   * Collection of methods that allow declaration and validation of props that are
+	   * supplied to React components. Example usage:
+	   *
+	   *   var Props = require('ReactPropTypes');
+	   *   var MyArticle = React.createClass({
+	   *     propTypes: {
+	   *       // An optional string prop named "description".
+	   *       description: Props.string,
+	   *
+	   *       // A required enum prop named "category".
+	   *       category: Props.oneOf(['News','Photos']).isRequired,
+	   *
+	   *       // A prop named "dialog" that requires an instance of Dialog.
+	   *       dialog: Props.instanceOf(Dialog).isRequired
+	   *     },
+	   *     render: function() { ... }
+	   *   });
+	   *
+	   * A more formal specification of how these methods are used:
+	   *
+	   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+	   *   decl := ReactPropTypes.{type}(.isRequired)?
+	   *
+	   * Each and every declaration produces a function with the same signature. This
+	   * allows the creation of custom validation functions. For example:
+	   *
+	   *  var MyLink = React.createClass({
+	   *    propTypes: {
+	   *      // An optional string or URI prop named "href".
+	   *      href: function(props, propName, componentName) {
+	   *        var propValue = props[propName];
+	   *        if (propValue != null && typeof propValue !== 'string' &&
+	   *            !(propValue instanceof URI)) {
+	   *          return new Error(
+	   *            'Expected a string or an URI for ' + propName + ' in ' +
+	   *            componentName
+	   *          );
+	   *        }
+	   *      }
+	   *    },
+	   *    render: function() {...}
+	   *  });
+	   *
+	   * @internal
+	   */
+
+	  var ANONYMOUS = '<<anonymous>>';
+
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+	  var ReactPropTypes = {
+	    array: createPrimitiveTypeChecker('array'),
+	    bool: createPrimitiveTypeChecker('boolean'),
+	    func: createPrimitiveTypeChecker('function'),
+	    number: createPrimitiveTypeChecker('number'),
+	    object: createPrimitiveTypeChecker('object'),
+	    string: createPrimitiveTypeChecker('string'),
+	    symbol: createPrimitiveTypeChecker('symbol'),
+
+	    any: createAnyTypeChecker(),
+	    arrayOf: createArrayOfTypeChecker,
+	    element: createElementTypeChecker(),
+	    instanceOf: createInstanceTypeChecker,
+	    node: createNodeChecker(),
+	    objectOf: createObjectOfTypeChecker,
+	    oneOf: createEnumTypeChecker,
+	    oneOfType: createUnionTypeChecker,
+	    shape: createShapeTypeChecker,
+	    exact: createStrictShapeTypeChecker,
+	  };
+
+	  /**
+	   * inlined Object.is polyfill to avoid requiring consumers ship their own
+	   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+	   */
+	  /*eslint-disable no-self-compare*/
+	  function is(x, y) {
+	    // SameValue algorithm
+	    if (x === y) {
+	      // Steps 1-5, 7-10
+	      // Steps 6.b-6.e: +0 != -0
+	      return x !== 0 || 1 / x === 1 / y;
+	    } else {
+	      // Step 6.a: NaN == NaN
+	      return x !== x && y !== y;
+	    }
+	  }
+	  /*eslint-enable no-self-compare*/
+
+	  /**
+	   * We use an Error-like object for backward compatibility as people may call
+	   * PropTypes directly and inspect their output. However, we don't use real
+	   * Errors anymore. We don't inspect their stack anyway, and creating them
+	   * is prohibitively expensive if they are created too often, such as what
+	   * happens in oneOfType() for any type before the one that matched.
+	   */
+	  function PropTypeError(message) {
+	    this.message = message;
+	    this.stack = '';
+	  }
+	  // Make `instanceof Error` still work for returned errors.
+	  PropTypeError.prototype = Error.prototype;
+
+	  function createChainableTypeChecker(validate) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      var manualPropTypeCallCache = {};
+	      var manualPropTypeWarningCount = 0;
+	    }
+	    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+	      componentName = componentName || ANONYMOUS;
+	      propFullName = propFullName || propName;
+
+	      if (secret !== ReactPropTypesSecret_1) {
+	        if (throwOnDirectAccess) {
+	          // New behavior only for users of `prop-types` package
+	          invariant_1(
+	            false,
+	            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	            'Use `PropTypes.checkPropTypes()` to call them. ' +
+	            'Read more at http://fb.me/use-check-prop-types'
+	          );
+	        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+	          // Old behavior for people using React.PropTypes
+	          var cacheKey = componentName + ':' + propName;
+	          if (
+	            !manualPropTypeCallCache[cacheKey] &&
+	            // Avoid spamming the console because they are often not actionable except for lib authors
+	            manualPropTypeWarningCount < 3
+	          ) {
+	            warning_1(
+	              false,
+	              'You are manually calling a React.PropTypes validation ' +
+	              'function for the `%s` prop on `%s`. This is deprecated ' +
+	              'and will throw in the standalone `prop-types` package. ' +
+	              'You may be seeing this warning due to a third-party PropTypes ' +
+	              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+	              propFullName,
+	              componentName
+	            );
+	            manualPropTypeCallCache[cacheKey] = true;
+	            manualPropTypeWarningCount++;
+	          }
+	        }
+	      }
+	      if (props[propName] == null) {
+	        if (isRequired) {
+	          if (props[propName] === null) {
+	            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+	          }
+	          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+	        }
+	        return null;
+	      } else {
+	        return validate(props, propName, componentName, location, propFullName);
+	      }
+	    }
+
+	    var chainedCheckType = checkType.bind(null, false);
+	    chainedCheckType.isRequired = checkType.bind(null, true);
+
+	    return chainedCheckType;
+	  }
+
+	  function createPrimitiveTypeChecker(expectedType) {
+	    function validate(props, propName, componentName, location, propFullName, secret) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== expectedType) {
+	        // `propValue` being instance of, say, date/regexp, pass the 'object'
+	        // check, but we can offer a more precise error message here rather than
+	        // 'of type `object`'.
+	        var preciseType = getPreciseType(propValue);
+
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createAnyTypeChecker() {
+	    return createChainableTypeChecker(emptyFunction_1.thatReturnsNull);
+	  }
+
+	  function createArrayOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+	      }
+	      var propValue = props[propName];
+	      if (!Array.isArray(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+	      }
+	      for (var i = 0; i < propValue.length; i++) {
+	        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1);
+	        if (error instanceof Error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createElementTypeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      if (!isValidElement(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createInstanceTypeChecker(expectedClass) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!(props[propName] instanceof expectedClass)) {
+	        var expectedClassName = expectedClass.name || ANONYMOUS;
+	        var actualClassName = getClassName(props[propName]);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createEnumTypeChecker(expectedValues) {
+	    if (!Array.isArray(expectedValues)) {
+	      process.env.NODE_ENV !== 'production' ? warning_1(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+	      return emptyFunction_1.thatReturnsNull;
+	    }
+
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      for (var i = 0; i < expectedValues.length; i++) {
+	        if (is(propValue, expectedValues[i])) {
+	          return null;
+	        }
+	      }
+
+	      var valuesString = JSON.stringify(expectedValues);
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createObjectOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+	      }
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+	      }
+	      for (var key in propValue) {
+	        if (propValue.hasOwnProperty(key)) {
+	          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+	          if (error instanceof Error) {
+	            return error;
+	          }
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createUnionTypeChecker(arrayOfTypeCheckers) {
+	    if (!Array.isArray(arrayOfTypeCheckers)) {
+	      process.env.NODE_ENV !== 'production' ? warning_1(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+	      return emptyFunction_1.thatReturnsNull;
+	    }
+
+	    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+	      var checker = arrayOfTypeCheckers[i];
+	      if (typeof checker !== 'function') {
+	        warning_1(
+	          false,
+	          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+	          'received %s at index %s.',
+	          getPostfixForTypeWarning(checker),
+	          i
+	        );
+	        return emptyFunction_1.thatReturnsNull;
+	      }
+	    }
+
+	    function validate(props, propName, componentName, location, propFullName) {
+	      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+	        var checker = arrayOfTypeCheckers[i];
+	        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
+	          return null;
+	        }
+	      }
+
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createNodeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!isNode(props[propName])) {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createShapeTypeChecker(shapeTypes) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+	      }
+	      for (var key in shapeTypes) {
+	        var checker = shapeTypes[key];
+	        if (!checker) {
+	          continue;
+	        }
+	        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+	        if (error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createStrictShapeTypeChecker(shapeTypes) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+	      }
+	      // We need to check all keys in case some are required but missing from
+	      // props.
+	      var allKeys = objectAssign({}, props[propName], shapeTypes);
+	      for (var key in allKeys) {
+	        var checker = shapeTypes[key];
+	        if (!checker) {
+	          return new PropTypeError(
+	            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+	            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+	            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+	          );
+	        }
+	        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
+	        if (error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function isNode(propValue) {
+	    switch (typeof propValue) {
+	      case 'number':
+	      case 'string':
+	      case 'undefined':
+	        return true;
+	      case 'boolean':
+	        return !propValue;
+	      case 'object':
+	        if (Array.isArray(propValue)) {
+	          return propValue.every(isNode);
+	        }
+	        if (propValue === null || isValidElement(propValue)) {
+	          return true;
+	        }
+
+	        var iteratorFn = getIteratorFn(propValue);
+	        if (iteratorFn) {
+	          var iterator = iteratorFn.call(propValue);
+	          var step;
+	          if (iteratorFn !== propValue.entries) {
+	            while (!(step = iterator.next()).done) {
+	              if (!isNode(step.value)) {
+	                return false;
+	              }
+	            }
+	          } else {
+	            // Iterator will provide entry [k,v] tuples rather than values.
+	            while (!(step = iterator.next()).done) {
+	              var entry = step.value;
+	              if (entry) {
+	                if (!isNode(entry[1])) {
+	                  return false;
+	                }
+	              }
+	            }
+	          }
+	        } else {
+	          return false;
+	        }
+
+	        return true;
+	      default:
+	        return false;
+	    }
+	  }
+
+	  function isSymbol(propType, propValue) {
+	    // Native Symbol.
+	    if (propType === 'symbol') {
+	      return true;
+	    }
+
+	    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+	    if (propValue['@@toStringTag'] === 'Symbol') {
+	      return true;
+	    }
+
+	    // Fallback for non-spec compliant Symbols which are polyfilled.
+	    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+	      return true;
+	    }
+
+	    return false;
+	  }
+
+	  // Equivalent of `typeof` but with special handling for array and regexp.
+	  function getPropType(propValue) {
+	    var propType = typeof propValue;
+	    if (Array.isArray(propValue)) {
+	      return 'array';
+	    }
+	    if (propValue instanceof RegExp) {
+	      // Old webkits (at least until Android 4.0) return 'function' rather than
+	      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+	      // passes PropTypes.object.
+	      return 'object';
+	    }
+	    if (isSymbol(propType, propValue)) {
+	      return 'symbol';
+	    }
+	    return propType;
+	  }
+
+	  // This handles more types than `getPropType`. Only used for error messages.
+	  // See `createPrimitiveTypeChecker`.
+	  function getPreciseType(propValue) {
+	    if (typeof propValue === 'undefined' || propValue === null) {
+	      return '' + propValue;
+	    }
+	    var propType = getPropType(propValue);
+	    if (propType === 'object') {
+	      if (propValue instanceof Date) {
+	        return 'date';
+	      } else if (propValue instanceof RegExp) {
+	        return 'regexp';
+	      }
+	    }
+	    return propType;
+	  }
+
+	  // Returns a string that is postfixed to a warning about an invalid type.
+	  // For example, "undefined" or "of type array"
+	  function getPostfixForTypeWarning(value) {
+	    var type = getPreciseType(value);
+	    switch (type) {
+	      case 'array':
+	      case 'object':
+	        return 'an ' + type;
+	      case 'boolean':
+	      case 'date':
+	      case 'regexp':
+	        return 'a ' + type;
+	      default:
+	        return type;
+	    }
+	  }
+
+	  // Returns class name of the object, if any.
+	  function getClassName(propValue) {
+	    if (!propValue.constructor || !propValue.constructor.name) {
+	      return ANONYMOUS;
+	    }
+	    return propValue.constructor.name;
+	  }
+
+	  ReactPropTypes.checkPropTypes = checkPropTypes_1;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+	var factoryWithThrowingShims = function() {
+	  function shim(props, propName, componentName, location, propFullName, secret) {
+	    if (secret === ReactPropTypesSecret_1) {
+	      // It is still safe when called from React.
+	      return;
+	    }
+	    invariant_1(
+	      false,
+	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	      'Use PropTypes.checkPropTypes() to call them. ' +
+	      'Read more at http://fb.me/use-check-prop-types'
+	    );
+	  }
+	  shim.isRequired = shim;
+	  function getShim() {
+	    return shim;
+	  }
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+	  var ReactPropTypes = {
+	    array: shim,
+	    bool: shim,
+	    func: shim,
+	    number: shim,
+	    object: shim,
+	    string: shim,
+	    symbol: shim,
+
+	    any: shim,
+	    arrayOf: getShim,
+	    element: shim,
+	    instanceOf: getShim,
+	    node: shim,
+	    objectOf: getShim,
+	    oneOf: getShim,
+	    oneOfType: getShim,
+	    shape: getShim,
+	    exact: getShim
+	  };
+
+	  ReactPropTypes.checkPropTypes = emptyFunction_1;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+	var propTypes = createCommonjsModule(function (module) {
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 *
+	 * This source code is licensed under the MIT license found in the
+	 * LICENSE file in the root directory of this source tree.
+	 */
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+	    Symbol.for &&
+	    Symbol.for('react.element')) ||
+	    0xeac7;
+
+	  var isValidElement = function(object) {
+	    return typeof object === 'object' &&
+	      object !== null &&
+	      object.$$typeof === REACT_ELEMENT_TYPE;
+	  };
+
+	  // By explicitly using `prop-types` you are opting into new development behavior.
+	  // http://fb.me/prop-types-in-prod
+	  var throwOnDirectAccess = true;
+	  module.exports = factoryWithTypeCheckers(isValidElement, throwOnDirectAccess);
+	} else {
+	  // By explicitly using `prop-types` you are opting into new production behavior.
+	  // http://fb.me/prop-types-in-prod
+	  module.exports = factoryWithThrowingShims();
+	}
+	});
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var NODE_ENV = process.env.NODE_ENV;
+
+	var invariant$3 = function(condition, format, a, b, c, d, e, f) {
+	  if (NODE_ENV !== 'production') {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	var invariant_1$2 = invariant$3;
+
+	var camel2hyphen = function (str) {
+	  return str
+	          .replace(/[A-Z]/g, function (match) {
+	            return '-' + match.toLowerCase();
+	          })
+	          .toLowerCase();
+	};
+
+	var camel2hyphen_1 = camel2hyphen;
+
+	var isDimension = function (feature) {
+	  var re = /[height|width]$/;
+	  return re.test(feature);
+	};
+
+	var obj2mq = function (obj) {
+	  var mq = '';
+	  var features = Object.keys(obj);
+	  features.forEach(function (feature, index) {
+	    var value = obj[feature];
+	    feature = camel2hyphen_1(feature);
+	    // Add px to dimension features
+	    if (isDimension(feature) && typeof value === 'number') {
+	      value = value + 'px';
+	    }
+	    if (value === true) {
+	      mq += feature;
+	    } else if (value === false) {
+	      mq += 'not ' + feature;
+	    } else {
+	      mq += '(' + feature + ': ' + value + ')';
+	    }
+	    if (index < features.length-1) {
+	      mq += ' and ';
+	    }
+	  });
+	  return mq;
+	};
+
+	var json2mq = function (query) {
+	  var mq = '';
+	  if (typeof query === 'string') {
+	    return query;
+	  }
+	  // Handling array of media queries
+	  if (query instanceof Array) {
+	    query.forEach(function (q, index) {
+	      mq += obj2mq(q);
+	      if (index < query.length-1) {
+	        mq += ', ';
+	      }
+	    });
+	    return mq;
+	  }
+	  // Handling single media query
+	  return obj2mq(query);
+	};
+
+	var json2mq_1 = json2mq;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	};
+
+
+
+
+
+
+
+
+
+
+
+	var classCallCheck = function (instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	};
+
+
+
+
+
+
+
+
+
+
+
+	var inherits = function (subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      enumerable: false,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	};
+
+
+
+
+
+
+
+
+
+
+
+	var possibleConstructorReturn = function (self, call) {
+	  if (!self) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	};
+
+	/**
+	 * Conditionally renders based on whether or not a media query matches.
+	 */
+
+	var Media = function (_React$Component) {
+	  inherits(Media, _React$Component);
+
+	  function Media() {
+	    var _temp, _this, _ret;
+
+	    classCallCheck(this, Media);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.state = {
+	      matches: _this.props.defaultMatches
+	    }, _this.updateMatches = function () {
+	      return _this.setState({ matches: _this.mediaQueryList.matches });
+	    }, _temp), possibleConstructorReturn(_this, _ret);
+	  }
+
+	  Media.prototype.componentWillMount = function componentWillMount() {
+	    if ((typeof window === "undefined" ? "undefined" : _typeof(window)) !== "object") return;
+
+	    var targetWindow = this.props.targetWindow || window;
+
+	    invariant_1$2(typeof targetWindow.matchMedia === "function", "<Media targetWindow> does not support `matchMedia`.");
+
+	    var query = this.props.query;
+
+	    if (typeof query !== "string") query = json2mq_1(query);
+
+	    this.mediaQueryList = targetWindow.matchMedia(query);
+	    this.mediaQueryList.addListener(this.updateMatches);
+	    this.updateMatches();
+	  };
+
+	  Media.prototype.componentWillUnmount = function componentWillUnmount() {
+	    this.mediaQueryList.removeListener(this.updateMatches);
+	  };
+
+	  Media.prototype.render = function render() {
+	    var _props = this.props,
+	        children = _props.children,
+	        render = _props.render;
+	    var matches = this.state.matches;
+
+
+	    return render ? matches ? render() : null : children ? typeof children === "function" ? children(matches) : !Array.isArray(children) || children.length // Preact defaults to empty children array
+	    ? matches ? React.Children.only(children) : null : null : null;
+	  };
+
+	  return Media;
+	}(React.Component);
+
+	Media.propTypes = {
+	  defaultMatches: propTypes.bool,
+	  query: propTypes.oneOfType([propTypes.string, propTypes.object, propTypes.arrayOf(propTypes.object.isRequired)]).isRequired,
+	  render: propTypes.func,
+	  children: propTypes.oneOfType([propTypes.node, propTypes.func]),
+	  targetWindow: propTypes.object
+	};
+	Media.defaultProps = {
+	  defaultMatches: true
+	};
+
+	module.exports = Media;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 316 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.detectBrowser = exports.getNodes = exports.scrollTo = exports.renderUtils = exports.INTENT_MAP = exports.hideAllButActive = exports.showAll = exports.constants = exports.composedPath = undefined;
+
+	var _renderUtils = __webpack_require__(317);
+
+	var renderUtils = _interopRequireWildcard(_renderUtils);
+
+	var _scrollTo = __webpack_require__(318);
+
+	var _scrollTo2 = _interopRequireDefault(_scrollTo);
+
+	var _constants = __webpack_require__(319);
+
+	var constants = _interopRequireWildcard(_constants);
+
+	var _detectOS = __webpack_require__(320);
+
+	var _detectOS2 = _interopRequireDefault(_detectOS);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function composedPath(el) {
+		var paths = [];
+
+		while (el) {
+			paths.push(el);
+
+			if (el.tagName === 'HTML') {
+				paths.push(document);
+				paths.push(window);
+				return paths;
+			}
+
+			el = el.parentElement;
+		}
+
+		return paths;
+	}
+
+	function getNodes(document, sel) {
+		return document.querySelectorAll('[' + sel + ']');
+	}
+
+	function hideAllButActive(activeSlide, nodes) {
+		Array.prototype.forEach.call(nodes, function (n, i) {
+			if (i === activeSlide) {
+				n.style.display = 'inline-block';
+			} else {
+				n.style.display = 'none';
+			}
+		});
+	}
+
+	function showAll(nodes) {
+		Array.prototype.forEach.call(nodes, function (n) {
+			n.style.display = 'inline-block';
+		});
+	}
+
+	var INTENT_MAP = {
+		'VERTICAL': {
+			0: 'UP',
+			1: 'DOWN'
+		},
+		'HORIZONTAL': {
+			0: 'LEFT',
+			1: 'RIGHT'
+		}
+	};
+
+	function detectBrowser(userAgentString) {
+		if (!userAgentString) {
+			return null;
+		}
+
+		var browsers = [['edge', /Edge\/([0-9\._]+)/], ['yandexbrowser', /YaBrowser\/([0-9\._]+)/], ['vivaldi', /Vivaldi\/([0-9\.]+)/], ['kakaotalk', /KAKAOTALK\s([0-9\.]+)/], ['chrome', /(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/], ['phantomjs', /PhantomJS\/([0-9\.]+)(:?\s|$)/], ['crios', /CriOS\/([0-9\.]+)(:?\s|$)/], ['firefox', /Firefox\/([0-9\.]+)(?:\s|$)/], ['fxios', /FxiOS\/([0-9\.]+)/], ['opera', /Opera\/([0-9\.]+)(?:\s|$)/], ['opera', /OPR\/([0-9\.]+)(:?\s|$)$/], ['ie', /Trident\/7\.0.*rv\:([0-9\.]+).*\).*Gecko$/], ['ie', /MSIE\s([0-9\.]+);.*Trident\/[4-7].0/], ['ie', /MSIE\s(7\.0)/], ['bb10', /BB10;\sTouch.*Version\/([0-9\.]+)/], ['android', /Android\s([0-9\.]+)/], ['ios', /Version\/([0-9\._]+).*Mobile.*Safari.*/], ['safari', /Version\/([0-9\._]+).*Safari/]];
+
+		return browsers.map(function (rule) {
+			if (rule[1].test(userAgentString)) {
+				var match = rule[1].exec(userAgentString);
+				var version = match && match[1].split(/[._]/).slice(0, 3);
+
+				if (version && version.length < 3) {
+					Array.prototype.push.apply(version, version.length == 1 ? [0, 0] : [0]);
+				}
+
+				return {
+					name: rule[0],
+					version: version.join('.'),
+					os: (0, _detectOS2.default)(userAgentString)
+				};
+			}
+		}).filter(Boolean).shift();
+	}
+
+	exports.composedPath = composedPath;
+	exports.constants = constants;
+	exports.showAll = showAll;
+	exports.hideAllButActive = hideAllButActive;
+	exports.INTENT_MAP = INTENT_MAP;
+	exports.renderUtils = renderUtils;
+	exports.scrollTo = _scrollTo2.default;
+	exports.getNodes = getNodes;
+	exports.detectBrowser = detectBrowser;
+
+/***/ }),
+/* 317 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var KEY_IDX = {
+	  37: 'LEFT',
+	  38: 'UP',
+	  39: 'RIGHT',
+	  40: 'DOWN'
+	};
+
+	exports.KEY_IDX = KEY_IDX;
+
+/***/ }),
+/* 318 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	function scrollTo(element, elementBoundary, to, duration, callback) {
+	  var start = element[elementBoundary],
+	      change = to - start,
+	      increment = 10;
+
+	  var currentTime = 0;
+	  var globalId = requestAnimationFrame(repeatOften);
+	  function repeatOften() {
+	    currentTime += increment;
+	    var val = easeInOutQuad(currentTime, start, change, duration);
+	    element[elementBoundary] = val;
+
+	    if (currentTime >= duration) {
+	      cancelAnimationFrame(globalId);
+	      return callback();
+	    }
+	    globalId = requestAnimationFrame(repeatOften);
+	  }
+	}
+
+	//t = current time
+	//b = start value
+	//c = change in value
+	//d = duration
+	var easeInOutQuad = function easeInOutQuad(t, b, c, d) {
+	  t /= d;
+	  return -c * t * (t - 2) + b;
+	};
+
+	exports.default = scrollTo;
+
+/***/ }),
+/* 319 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var INCREMENT = 'INCREMENT';
+	var DECREMENT = 'DECREMENT';
+	var VERTICAL = 'VERTICAL';
+	var HORIZONTAL = 'HORIZONTAL';
+	var HEAD = 'HEAD';
+	var TAIL = 'TAIL';
+	var I_BLOCK = 'inline-block';
+	var BLOCK = 'block';
+	var NONE = 'none';
+	var noOp = function noOp() {};
+
+	exports.INCREMENT = INCREMENT;
+	exports.DECREMENT = DECREMENT;
+	exports.VERTICAL = VERTICAL;
+	exports.HORIZONTAL = HORIZONTAL;
+	exports.I_BLOCK = I_BLOCK;
+	exports.HEAD = HEAD;
+	exports.TAIL = TAIL;
+	exports.BLOCK = BLOCK;
+	exports.NONE = NONE;
+	exports.noOp = noOp;
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	module.exports = function detectOS(userAgentString) {
+	    var operatingSystems = [{
+	        name: 'iOS',
+	        rule: /iP(hone|od|ad)/
+	    }, {
+	        name: 'Android OS',
+	        rule: /Android/
+	    }, {
+	        name: 'BlackBerry OS',
+	        rule: /BlackBerry|BB10/
+	    }, {
+	        name: 'Windows Mobile',
+	        rule: /IEMobile/
+	    }, {
+	        name: 'Amazon OS',
+	        rule: /Kindle/
+	    }, {
+	        name: 'Windows 3.11',
+	        rule: /Win16/
+	    }, {
+	        name: 'Windows 95',
+	        rule: /(Windows 95)|(Win95)|(Windows_95)/
+	    }, {
+	        name: 'Windows 98',
+	        rule: /(Windows 98)|(Win98)/
+	    }, {
+	        name: 'Windows 2000',
+	        rule: /(Windows NT 5.0)|(Windows 2000)/
+	    }, {
+	        name: 'Windows XP',
+	        rule: /(Windows NT 5.1)|(Windows XP)/
+	    }, {
+	        name: 'Windows Server 2003',
+	        rule: /(Windows NT 5.2)/
+	    }, {
+	        name: 'Windows Vista',
+	        rule: /(Windows NT 6.0)/
+	    }, {
+	        name: 'Windows 7',
+	        rule: /(Windows NT 6.1)/
+	    }, {
+	        name: 'Windows 8',
+	        rule: /(Windows NT 6.2)/
+	    }, {
+	        name: 'Windows 8.1',
+	        rule: /(Windows NT 6.3)/
+	    }, {
+	        name: 'Windows 10',
+	        rule: /(Windows NT 10.0)/
+	    }, {
+	        name: 'Windows ME',
+	        rule: /Windows ME/
+	    }, {
+	        name: 'Open BSD',
+	        rule: /OpenBSD/
+	    }, {
+	        name: 'Sun OS',
+	        rule: /SunOS/
+	    }, {
+	        name: 'Linux',
+	        rule: /(Linux)|(X11)/
+	    }, {
+	        name: 'Mac OS',
+	        rule: /(Mac_PowerPC)|(Macintosh)/
+	    }, {
+	        name: 'QNX',
+	        rule: /QNX/
+	    }, {
+	        name: 'BeOS',
+	        rule: /BeOS/
+	    }, {
+	        name: 'OS/2',
+	        rule: /OS\/2/
+	    }, {
+	        name: 'Search Bot',
+	        rule: /(nuhk)|(Googlebot)|(Yammybot)|(Openbot)|(Slurp)|(MSNBot)|(Ask Jeeves\/Teoma)|(ia_archiver)/
+	    }];
+
+	    var detected = operatingSystems.filter(function (os) {
+	        if (userAgentString.match(os.rule)) {
+	            return true;
+	        }
+	    });
+
+	    return detected && detected[0] ? detected[0].name : null;
+	};
+
+/***/ }),
+/* 321 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var HorizontalSlide = 'HorizontalSlide';
+	var VerticalSlide = 'VerticalSlide';
+
+	var Slide = function Slide(_ref) {
+	  var id = _ref.id,
+	      render = _ref.render,
+	      className = _ref.className,
+	      width = _ref.width,
+	      height = _ref.height,
+	      horizontal = _ref.horizontal,
+	      horizontalSliderName = _ref.horizontalSliderName,
+	      children = _ref.children,
+	      style = _ref.style;
+
+	  if (!render) {
+	    return null;
+	  }
+
+	  var slideStyle = style || {};
+
+	  var styles = Object.assign({
+	    overflow: 'hidden', width: width + 'px', height: height + 'px', position: 'relative'
+	  }, slideStyle);
+
+	  var slideClassName = horizontal ? [HorizontalSlide] : [VerticalSlide];
+	  if (className) {
+	    slideClassName.push(className);
+	  }
+	  slideClassName = slideClassName.join(' ');
+
+	  var attrs = {
+	    'data-slide': horizontal ? HorizontalSlide : VerticalSlide,
+	    'data-horizontal-slider': horizontalSliderName || null
+	  };
+
+	  return _react2.default.createElement(
+	    'div',
+	    _extends({ className: slideClassName, id: id }, attrs, { style: styles }),
+	    children
+	  );
+	};
+
+	exports.default = Slide;
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Slide = __webpack_require__(321);
+
+	var _Slide2 = _interopRequireDefault(_Slide);
+
+	var _utils = __webpack_require__(316);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var HorizontalSlider = function (_React$Component) {
+	  _inherits(HorizontalSlider, _React$Component);
+
+	  function HorizontalSlider(props) {
+	    _classCallCheck(this, HorizontalSlider);
+
+	    var _this = _possibleConstructorReturn(this, (HorizontalSlider.__proto__ || Object.getPrototypeOf(HorizontalSlider)).call(this, props));
+
+	    _this.name = _this.props.name;
+	    return _this;
+	  }
+
+	  _createClass(HorizontalSlider, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _props = this.props,
+	          activeSlide = _props.activeSlide,
+	          document = _props.document,
+	          name = _props.name,
+	          cache = _props.cache;
+
+	      cache(this);
+
+	      var nodes = (0, _utils.getNodes)(document, 'data-horizontal-slider="' + name + '"');
+	      (0, _utils.hideAllButActive)(activeSlide, nodes);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var p = this.props;
+	      var name = p.name,
+	          children = p.children,
+	          height = p.height,
+	          width = p.width,
+	          window = p.window;
+
+
+	      if (!name) {
+	        throw new Error('name is a required prop for HorizontalSlider');
+	      }
+
+	      var elements = p.slides.reduce(function (result, sl) {
+	        if (!sl) {
+	          return result;
+	        }
+
+	        if (typeof sl.type !== 'function') {
+	          result.other.push(sl);
+	        } else {
+	          result.slides.push(sl);
+	        }
+
+	        return result;
+	      }, { slides: [], other: [] });
+
+	      var other = elements.other,
+	          slides = elements.slides;
+
+
+	      var attrs = {
+	        'data-slide': 'HorizontalSlider',
+	        'data-name': name
+	      };
+
+	      var className = (p.className || '') + 'HorizontalSlider';
+	      var overflowX = p.hideScrollBars ? 'hidden' : 'auto';
+
+	      var horizontalSliderStyle = Object.assign({}, p.style, { height: height + 'px', width: width + 'px', position: 'relative', overflowX: overflowX, whiteSpace: 'nowrap', padding: '0px', margin: '0' });
+	      var horizontalSlideStyle = { overflow: 'hidden', whiteSpace: 'normal', display: 'inline-block' };
+
+	      return _react2.default.createElement(
+	        'div',
+	        _extends({ ref: function ref(node) {
+	            return _this2.node = node;
+	          }, className: className, id: p.id }, attrs, { style: horizontalSliderStyle }),
+	        other.map(function (o, i) {
+	          var p = o.props || {};
+	          return _react2.default.createElement('div', _extends({ key: i }, p));
+	        }),
+	        slides.map(function (s, i) {
+	          if (!s) {
+	            return null;
+	          }
+
+	          var sStyle = Object.assign({}, horizontalSlideStyle, slideStyle);
+	          var hSlideProps = s.props || {};
+	          var slideStyle = hSlideProps.style || {};
+
+	          return _react2.default.createElement(
+	            _Slide2.default,
+	            _extends({ render: true, key: i, horizontalSliderName: name, slide: s, id: hSlideProps.id, className: hSlideProps.className || '', height: height, width: width, horizontal: true, style: sStyle }, hSlideProps),
+	            hSlideProps.children
+	          );
+	        }),
+	        children
+	      );
+	    }
+	  }]);
+
+	  return HorizontalSlider;
+	}(_react2.default.Component);
+
+	exports.default = HorizontalSlider;
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var content = __webpack_require__(324);
+
+	if (typeof content === 'string') content = [[module.id, content, '']];
+
+	var transform;
+	var insertInto;
+
+	var options = { "hmr": true };
+
+	options.transform = transform;
+	options.insertInto = undefined;
+
+	var update = __webpack_require__(308)(content, options);
+
+	if (content.locals) module.exports = content.locals;
+
+	if (false) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!./normalize.css", function () {
+			var newContent = require("!!../../node_modules/css-loader/index.js!./normalize.css");
+
+			if (typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+			var locals = function (a, b) {
+				var key,
+				    idx = 0;
+
+				for (key in a) {
+					if (!b || a[key] !== b[key]) return false;
+					idx++;
+				}
+
+				for (key in b) {
+					idx--;
+				}return idx === 0;
+			}(content.locals, newContent.locals);
+
+			if (!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+			update(newContent);
+		});
+
+		module.hot.dispose(function () {
+			update();
+		});
+	}
+
+/***/ }),
+/* 324 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(307)(false);
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Change the default font family in all browsers (opinionated).\n * 2. Correct the line height in all browsers.\n * 3. Prevent adjustments of font size after orientation changes in\n *    IE on Windows Phone and in iOS.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  line-height: 1.15; /* 2 */\n  -ms-text-size-adjust: 100%; /* 3 */\n  -webkit-text-size-adjust: 100%; /* 3 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers (opinionated).\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Add the correct display in IE 9-.\n */\n\narticle,\naside,\nfooter,\nheader,\nnav,\nsection {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in IE.\n */\n\nfigcaption,\nfigure,\nmain { /* 1 */\n  display: block;\n}\n\n/**\n * Add the correct margin in IE 8.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\n\na {\n  background-color: transparent; /* 1 */\n  -webkit-text-decoration-skip: objects; /* 2 */\n}\n\n/**\n * Remove the outline on focused links when they are also active or hovered\n * in all browsers (opinionated).\n */\n\na:active,\na:hover {\n  outline-width: 0;\n}\n\n/**\n * 1. Remove the bottom border in Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\n\nb,\nstrong {\n  font-weight: inherit;\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font style in Android 4.3-.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Add the correct background and color in IE 9-.\n */\n\nmark {\n  background-color: #ff0;\n  color: #000;\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n */\n\naudio,\nvideo {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in iOS 4-7.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\n\nimg {\n  border-style: none;\n}\n\n/**\n * Hide the overflow in IE.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: sans-serif; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\nhtml [type=\"button\"], /* 1 */\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Change the border, margin, and padding in all browsers (opinionated).\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * 1. Add the correct display in IE 9-.\n * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  display: inline-block; /* 1 */\n  vertical-align: baseline; /* 2 */\n}\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n */\n\ndetails, /* 1 */\nmenu {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Scripting\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n */\n\ncanvas {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in IE.\n */\n\ntemplate {\n  display: none;\n}\n\n/* Hidden\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10-.\n */\n\n[hidden] {\n  display: none;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 325 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var content = __webpack_require__(326);
+
+	if (typeof content === 'string') content = [[module.id, content, '']];
+
+	var transform;
+	var insertInto;
+
+	var options = { "hmr": true };
+
+	options.transform = transform;
+	options.insertInto = undefined;
+
+	var update = __webpack_require__(308)(content, options);
+
+	if (content.locals) module.exports = content.locals;
+
+	if (false) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!./skeleton.css", function () {
+			var newContent = require("!!../../node_modules/css-loader/index.js!./skeleton.css");
+
+			if (typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+			var locals = function (a, b) {
+				var key,
+				    idx = 0;
+
+				for (key in a) {
+					if (!b || a[key] !== b[key]) return false;
+					idx++;
+				}
+
+				for (key in b) {
+					idx--;
+				}return idx === 0;
+			}(content.locals, newContent.locals);
+
+			if (!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+			update(newContent);
+		});
+
+		module.hot.dispose(function () {
+			update();
+		});
+	}
+
+/***/ }),
+/* 326 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(307)(false);
+	// imports
+
+
+	// module
+	exports.push([module.id, "/*\n* Skeleton V2.0.4\n* Copyright 2014, Dave Gamache\n* www.getskeleton.com\n* Free to use under the MIT license.\n* http://www.opensource.org/licenses/mit-license.php\n* 12/29/2014\n*/\n\n\n/* Table of contents\n––––––––––––––––––––––––––––––––––––––––––––––––––\n- Grid\n- Base Styles\n- Typography\n- Links\n- Buttons\n- Forms\n- Lists\n- Code\n- Tables\n- Spacing\n- Utilities\n- Clearing\n- Media Queries\n*/\n\n\n/* Grid\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n.container {\n  position: relative;\n  width: 100%;\n  max-width: 960px;\n  margin: 0 auto;\n  padding: 0 20px;\n  box-sizing: border-box; }\n.column,\n.columns {\n  width: 100%;\n  float: left;\n  box-sizing: border-box; }\n\n/* For devices larger than 400px */\n@media (min-width: 400px) {\n  .container {\n    width: 85%;\n    padding: 0; }\n}\n\n/* For devices larger than 550px */\n@media (min-width: 550px) {\n  .container {\n    width: 80%; }\n  .column,\n  .columns {\n    margin-left: 4%; }\n  .column:first-child,\n  .columns:first-child {\n    margin-left: 0; }\n\n  .one.column,\n  .one.columns                    { width: 4.66666666667%; }\n  .two.columns                    { width: 13.3333333333%; }\n  .three.columns                  { width: 22%;            }\n  .four.columns                   { width: 30.6666666667%; }\n  .five.columns                   { width: 39.3333333333%; }\n  .six.columns                    { width: 48%;            }\n  .seven.columns                  { width: 56.6666666667%; }\n  .eight.columns                  { width: 65.3333333333%; }\n  .nine.columns                   { width: 74.0%;          }\n  .ten.columns                    { width: 82.6666666667%; }\n  .eleven.columns                 { width: 91.3333333333%; }\n  .twelve.columns                 { width: 100%; margin-left: 0; }\n\n  .one-third.column               { width: 30.6666666667%; }\n  .two-thirds.column              { width: 65.3333333333%; }\n\n  .one-half.column                { width: 48%; }\n\n  /* Offsets */\n  .offset-by-one.column,\n  .offset-by-one.columns          { margin-left: 8.66666666667%; }\n  .offset-by-two.column,\n  .offset-by-two.columns          { margin-left: 17.3333333333%; }\n  .offset-by-three.column,\n  .offset-by-three.columns        { margin-left: 26%;            }\n  .offset-by-four.column,\n  .offset-by-four.columns         { margin-left: 34.6666666667%; }\n  .offset-by-five.column,\n  .offset-by-five.columns         { margin-left: 43.3333333333%; }\n  .offset-by-six.column,\n  .offset-by-six.columns          { margin-left: 52%;            }\n  .offset-by-seven.column,\n  .offset-by-seven.columns        { margin-left: 60.6666666667%; }\n  .offset-by-eight.column,\n  .offset-by-eight.columns        { margin-left: 69.3333333333%; }\n  .offset-by-nine.column,\n  .offset-by-nine.columns         { margin-left: 78.0%;          }\n  .offset-by-ten.column,\n  .offset-by-ten.columns          { margin-left: 86.6666666667%; }\n  .offset-by-eleven.column,\n  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }\n\n  .offset-by-one-third.column,\n  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }\n  .offset-by-two-thirds.column,\n  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }\n\n  .offset-by-one-half.column,\n  .offset-by-one-half.columns     { margin-left: 52%; }\n\n}\n\n\n/* Base Styles\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n/* NOTE\nhtml is set to 62.5% so that all the REM measurements throughout Skeleton\nare based on 10px sizing. So basically 1.5rem = 15px :) */\nhtml {\n  font-size: 62.5%; }\nbody {\n  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */\n  line-height: 1.6;\n  font-weight: 400;\n  font-family: \"Raleway\", \"HelveticaNeue\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n  color: #222; }\n\n\n/* Typography\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\nh1, h2, h3, h4, h5, h6 {\n  margin-top: 0;\n  margin-bottom: 2rem;\n  font-weight: 300; }\nh1 { font-size: 4.0rem; line-height: 1.2;  letter-spacing: -.1rem;}\nh2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem; }\nh3 { font-size: 3.0rem; line-height: 1.3;  letter-spacing: -.1rem; }\nh4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }\nh5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }\nh6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }\n\n/* Larger than phablet */\n@media (min-width: 550px) {\n  h1 { font-size: 5.0rem; }\n  h2 { font-size: 4.2rem; }\n  h3 { font-size: 3.6rem; }\n  h4 { font-size: 3.0rem; }\n  h5 { font-size: 2.4rem; }\n  h6 { font-size: 1.5rem; }\n}\n\np {\n  margin-top: 0; }\n\n\n/* Links\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\na {\n  color: #1EAEDB; }\na:hover {\n  color: #0FA0CE; }\n\n\n/* Buttons\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n.button,\nbutton,\ninput[type=\"submit\"],\ninput[type=\"reset\"],\ninput[type=\"button\"] {\n  display: inline-block;\n  height: 38px;\n  padding: 0 30px;\n  color: #555;\n  text-align: center;\n  font-size: 11px;\n  font-weight: 600;\n  line-height: 38px;\n  letter-spacing: .1rem;\n  text-transform: uppercase;\n  text-decoration: none;\n  white-space: nowrap;\n  background-color: transparent;\n  border-radius: 4px;\n  border: 1px solid #bbb;\n  cursor: pointer;\n  box-sizing: border-box; }\n.button:hover,\nbutton:hover,\ninput[type=\"submit\"]:hover,\ninput[type=\"reset\"]:hover,\ninput[type=\"button\"]:hover,\n.button:focus,\nbutton:focus,\ninput[type=\"submit\"]:focus,\ninput[type=\"reset\"]:focus,\ninput[type=\"button\"]:focus {\n  color: #333;\n  border-color: #888;\n  outline: 0; }\n.button.button-primary,\nbutton.button-primary,\ninput[type=\"submit\"].button-primary,\ninput[type=\"reset\"].button-primary,\ninput[type=\"button\"].button-primary {\n  color: #FFF;\n  background-color: #33C3F0;\n  border-color: #33C3F0; }\n.button.button-primary:hover,\nbutton.button-primary:hover,\ninput[type=\"submit\"].button-primary:hover,\ninput[type=\"reset\"].button-primary:hover,\ninput[type=\"button\"].button-primary:hover,\n.button.button-primary:focus,\nbutton.button-primary:focus,\ninput[type=\"submit\"].button-primary:focus,\ninput[type=\"reset\"].button-primary:focus,\ninput[type=\"button\"].button-primary:focus {\n  color: #FFF;\n  background-color: #1EAEDB;\n  border-color: #1EAEDB; }\n\n\n/* Forms\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\ninput[type=\"email\"],\ninput[type=\"number\"],\ninput[type=\"search\"],\ninput[type=\"text\"],\ninput[type=\"tel\"],\ninput[type=\"url\"],\ninput[type=\"password\"],\ntextarea,\nselect {\n  height: 38px;\n  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */\n  background-color: #fff;\n  border: 1px solid #D1D1D1;\n  border-radius: 4px;\n  box-shadow: none;\n  box-sizing: border-box; }\n/* Removes awkward default styles on some inputs for iOS */\ninput[type=\"email\"],\ninput[type=\"number\"],\ninput[type=\"search\"],\ninput[type=\"text\"],\ninput[type=\"tel\"],\ninput[type=\"url\"],\ninput[type=\"password\"],\ntextarea {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none; }\ntextarea {\n  min-height: 65px;\n  padding-top: 6px;\n  padding-bottom: 6px; }\ninput[type=\"email\"]:focus,\ninput[type=\"number\"]:focus,\ninput[type=\"search\"]:focus,\ninput[type=\"text\"]:focus,\ninput[type=\"tel\"]:focus,\ninput[type=\"url\"]:focus,\ninput[type=\"password\"]:focus,\ntextarea:focus,\nselect:focus {\n  border: 1px solid #33C3F0;\n  outline: 0; }\nlabel,\nlegend {\n  display: block;\n  margin-bottom: .5rem;\n  font-weight: 600; }\nfieldset {\n  padding: 0;\n  border-width: 0; }\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  display: inline; }\nlabel > .label-body {\n  display: inline-block;\n  margin-left: .5rem;\n  font-weight: normal; }\n\n\n/* Lists\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\nul {\n  list-style: circle inside; }\nol {\n  list-style: decimal inside; }\nol, ul {\n  padding-left: 0;\n  margin-top: 0; }\nul ul,\nul ol,\nol ol,\nol ul {\n  margin: 1.5rem 0 1.5rem 3rem;\n  font-size: 90%; }\nli {\n  margin-bottom: 1rem; }\n\n\n/* Code\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\ncode {\n  padding: .2rem .5rem;\n  margin: 0 .2rem;\n  font-size: 90%;\n  white-space: nowrap;\n  background: #F1F1F1;\n  border: 1px solid #E1E1E1;\n  border-radius: 4px; }\npre > code {\n  display: block;\n  padding: 1rem 1.5rem;\n  white-space: pre; }\n\n\n/* Tables\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\nth,\ntd {\n  padding: 12px 15px;\n  text-align: left;\n  border-bottom: 1px solid #E1E1E1; }\nth:first-child,\ntd:first-child {\n  padding-left: 0; }\nth:last-child,\ntd:last-child {\n  padding-right: 0; }\n\n\n/* Spacing\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\nbutton,\n.button {\n  margin-bottom: 1rem; }\ninput,\ntextarea,\nselect,\nfieldset {\n  margin-bottom: 1.5rem; }\npre,\nblockquote,\ndl,\nfigure,\ntable,\np,\nul,\nol,\nform {\n  margin-bottom: 2.5rem; }\n\n\n/* Utilities\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n.u-full-width {\n  width: 100%;\n  box-sizing: border-box; }\n.u-max-full-width {\n  max-width: 100%;\n  box-sizing: border-box; }\n.u-pull-right {\n  float: right; }\n.u-pull-left {\n  float: left; }\n\n\n/* Misc\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\nhr {\n  margin-top: 3rem;\n  margin-bottom: 3.5rem;\n  border-width: 0;\n  border-top: 1px solid #E1E1E1; }\n\n\n/* Clearing\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n\n/* Self Clearing Goodness */\n.container:after,\n.row:after,\n.u-cf {\n  content: \"\";\n  display: table;\n  clear: both; }\n\n\n/* Media Queries\n–––––––––––––––––––––––––––––––––––––––––––––––––– */\n/*\nNote: The best way to structure the use of media queries is to create the queries\nnear the relevant code. For example, if you wanted to change the styles for buttons\non small devices, paste the mobile query code up in the buttons section and style it\nthere.\n*/\n\n\n/* Larger than mobile */\n@media (min-width: 400px) {}\n\n/* Larger than phablet (also point when grid becomes active) */\n@media (min-width: 550px) {}\n\n/* Larger than tablet */\n@media (min-width: 750px) {}\n\n/* Larger than desktop */\n@media (min-width: 1000px) {}\n\n/* Larger than Desktop HD */\n@media (min-width: 1200px) {}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 327 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var content = __webpack_require__(328);
+
+	if (typeof content === 'string') content = [[module.id, content, '']];
+
+	var transform;
+	var insertInto;
+
+	var options = { "hmr": true };
+
+	options.transform = transform;
+	options.insertInto = undefined;
+
+	var update = __webpack_require__(308)(content, options);
+
+	if (content.locals) module.exports = content.locals;
+
+	if (false) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!./exampleStyles.styl", function () {
+			var newContent = require("!!../../node_modules/css-loader/index.js!./exampleStyles.styl");
+
+			if (typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+
+			var locals = function (a, b) {
+				var key,
+				    idx = 0;
+
+				for (key in a) {
+					if (!b || a[key] !== b[key]) return false;
+					idx++;
+				}
+
+				for (key in b) {
+					idx--;
+				}return idx === 0;
+			}(content.locals, newContent.locals);
+
+			if (!locals) throw new Error('Aborting CSS HMR due to changed css-modules locals.');
+
+			update(newContent);
+		});
+
+		module.hot.dispose(function () {
+			update();
+		});
+	}
+
+/***/ }),
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(307)(false);
+	// imports
+
+
+	// module
+	exports.push([module.id, "$blue = #35A7FF\n$dark-blue = #38618C\n$white = #FFFFFF\n$red = #FF5964\n$yellow = #FFE74C\n$green = #B8E0D2\n\n.blue\n  background-color $blue\n.dark-blue\n  background-color $dark-blue\n.white\n  background-color $white\n.red\n  background-color $red\n.yellow\n  background-color $yellow\n.green\n  background-color $green\n\n.color-blue\n  color $blue\n.color-white\n  color $white\n.color-red\n  color $red\n\n\nbutton\n  background-color $white\n  &:hover\n    background-color lightgray\n\np\n  padding-top 50%\n  text-align center\n  font-size 30px\n", ""]);
+
+	// exports
 
 
 /***/ })
