@@ -22,6 +22,7 @@ This full-stack web app is built with the MERN (MongoDB, Express, React, Node) s
 5) React
 6) Webpack
 7) Heroku
+8) Materialize
 
 ### To run on local machine
 ```
