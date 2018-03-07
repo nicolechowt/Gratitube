@@ -30169,7 +30169,7 @@
 		}, {
 			key: "componentWillMount",
 			value: function componentWillMount() {
-				document.body.style.backgroundColor = "#ffe600";
+				document.body.style.backgroundColor = "#FFE164";
 				// document.body.style.backgroundImage = "linearGradient(-90deg, #B8C39D, #AEEFEE)";
 			}
 		}, {
@@ -30387,35 +30387,42 @@
 								)
 							)
 						)
-					),
+					)
+				), _react2.default.createElement(
+					_index.Slide,
+					{ style: { backgroundColor: '#FFE164' } },
 					_react2.default.createElement(
 						"div",
-						{ className: "row" },
+						{ className: "container valign-wrapper center-align myWrapper" },
 						_react2.default.createElement(
 							"div",
-							{ className: "col s4 offset-s2" },
+							{ className: "row" },
 							_react2.default.createElement(
-								"form",
-								{ className: "form" },
-								_react2.default.createElement("input", { value: this.state.name, onChange: this.onChangeName, placeholder: "Name" }),
-								_react2.default.createElement("input", { value: this.state.location, onChange: this.onChangeLocation, placeholder: "Where are you from?" }),
-								_react2.default.createElement("input", { value: this.state.thankfulItem, onChange: this.onChangeTerm, placeholder: "What are you grateful for?" }),
+								"div",
+								{ className: "col s4" },
 								_react2.default.createElement(
-									"a",
-									{ className: "cyan lighten-4 btn", onClick: this.onAddItem.bind(this) },
-									"Add"
+									"form",
+									{ className: "form" },
+									_react2.default.createElement("input", { value: this.state.name, onChange: this.onChangeName, placeholder: "Name" }),
+									_react2.default.createElement("input", { value: this.state.location, onChange: this.onChangeLocation, placeholder: "Where are you from?" }),
+									_react2.default.createElement("input", { value: this.state.thankfulItem, onChange: this.onChangeTerm, placeholder: "What are you grateful for?" }),
+									_react2.default.createElement(
+										"a",
+										{ className: "cyan lighten-4 btn", onClick: this.onAddItem.bind(this) },
+										"Add"
+									)
 								)
-							)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "col s4" },
-							_react2.default.createElement(
-								"h2",
-								null,
-								"What are people grateful for?"
 							),
-							this.showList()
+							_react2.default.createElement(
+								"div",
+								{ className: "col s8" },
+								_react2.default.createElement(
+									"h2",
+									null,
+									"What are people grateful for?"
+								),
+								this.showList()
+							)
 						)
 					)
 				), _react2.default.createElement(
@@ -45181,7 +45188,7 @@
 
 
 	// module
-	exports.push([module.id, "h1, h2 {\n  font-family: 'Playfair Display', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Open Sans';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n.videoContent {\n  padding-top: 50px;\n}", ""]);
+	exports.push([module.id, "h1, h2 {\n  font-family: 'Playfair Display', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Open Sans';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n.videoContent, .inspirationContent {\n  padding-top: 50px;\n}\n\n.myWrapper {\n  height: 100%;\n}", ""]);
 
 	// exports
 

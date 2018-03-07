@@ -224,7 +224,7 @@ export default class Main extends React.Component {
 
 
 	componentWillMount(){
-    	document.body.style.backgroundColor = "#ffe600";
+    	document.body.style.backgroundColor = "#FFE164";
     	// document.body.style.backgroundImage = "linearGradient(-90deg, #B8C39D, #AEEFEE)";
 	}
 
@@ -309,6 +309,7 @@ export default class Main extends React.Component {
 
 	    const verticalSlides = [
 	      <Slide style={{backgroundColor: '#FFE164' }}>
+
 	      		<div className="title">
 					<h1>Gratitube</h1>
 					<p>A happy place.</p>
@@ -327,22 +328,26 @@ export default class Main extends React.Component {
                             </div>
                 		</div>
                 </div>
+          </Slide>,
 
-                <div className="row">
-                    <div className="col s4 offset-s2">
+          <Slide style={{backgroundColor: '#FFE164' }}>
+            <div className="container valign-wrapper center-align myWrapper">    
+               	<div className="row">
+                    <div className="col s4">
                      	<form className="form">
                     		<input value={this.state.name} onChange={this.onChangeName} placeholder="Name"/>	 
-							<input value={this.state.location} onChange={this.onChangeLocation} placeholder="Where are you from?"/>	                    		                    	
-                    		<input value={this.state.thankfulItem} onChange={this.onChangeTerm} placeholder="What are you grateful for?"/>
+							<input value={this.state.location} onChange={this.onChangeLocation} placeholder="Where are you from?"/>	         
+							<input value={this.state.thankfulItem} onChange={this.onChangeTerm} placeholder="What are you grateful for?"/>
                     		<a className="cyan lighten-4 btn" onClick={this.onAddItem.bind(this)}>Add</a>
                     	</form>
                     </div>
 
-                    <div className="col s4">
+                    <div className="col s8">
                      	<h2>What are people grateful for?</h2>
                 		{this.showList()}
                     </div>
                 </div>
+            </div>
 
 	      </Slide>,
 	      <Slide style={{backgroundColor: '#F0F0EB'}}>
