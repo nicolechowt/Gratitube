@@ -30260,56 +30260,60 @@
 					{ style: { backgroundColor: '#FFE164' } },
 					_react2.default.createElement(
 						"div",
-						{ className: "container" },
+						{ className: "inspirationContent" },
 						_react2.default.createElement(
 							"div",
-							{ className: "row" },
+							{ className: "container" },
 							_react2.default.createElement(
 								"div",
-								{ className: "col s10 offset-s1 card white z-depth-2 center-align",
-									style: _extends({}, styles, { opacity: this.state.opacity, height: this.state.height }) },
+								{ className: "row" },
 								_react2.default.createElement(
 									"div",
-									{ className: "card-content grey-text" },
+									{ className: "col s10 offset-s1 card white z-depth-2 center-align",
+										style: _extends({}, styles, { opacity: this.state.opacity, height: this.state.height }) },
 									_react2.default.createElement(
-										"span",
-										{ className: "card-title" },
-										"Weekly Challenge"
-									),
-									_react2.default.createElement(
-										"p",
-										null,
-										"Vow to not complain, criticize, or gossip for a week.",
-										_react2.default.createElement("br", null),
+										"div",
+										{ className: "card-content grey-text" },
 										_react2.default.createElement(
-											"br",
-											null,
-											"If you slip, rally your willpower and keep going."
+											"span",
+											{ className: "card-title" },
+											"Weekly Challenge"
 										),
-										" Notice how much energy you were spending on ",
-										_react2.default.createElement("br", null),
-										"negative thoughts."
+										_react2.default.createElement(
+											"p",
+											null,
+											"Vow to not complain, criticize, or gossip for a week.",
+											_react2.default.createElement("br", null),
+											_react2.default.createElement(
+												"br",
+												null,
+												"If you slip, rally your willpower and keep going."
+											),
+											" Notice how much energy you were spending on ",
+											_react2.default.createElement("br", null),
+											"negative thoughts."
+										)
 									)
 								)
-							)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "row" },
+							),
 							_react2.default.createElement(
 								"div",
-								{ className: "col s10 offset-s1 center-align" },
+								{ className: "row" },
 								_react2.default.createElement(
-									"h1",
-									null,
-									"Need some inspiration?"
-								),
-								_react2.default.createElement(
-									"h3",
-									null,
-									"Click next to see how the community is doing!",
-									_react2.default.createElement("br", null),
-									_react2.default.createElement("i", { className: "fa fa-angle-double-right" })
+									"div",
+									{ className: "col s10 offset-s1 center-align" },
+									_react2.default.createElement(
+										"h1",
+										null,
+										"Need some inspiration?"
+									),
+									_react2.default.createElement(
+										"h3",
+										null,
+										"Click next to see how the community is doing!",
+										_react2.default.createElement("br", null),
+										_react2.default.createElement("i", { className: "fa fa-angle-double-right" })
+									)
 								)
 							)
 						)
@@ -30324,12 +30328,6 @@
 							"h1",
 							null,
 							"*Place Holder*"
-						),
-						_react2.default.createElement("br", null),
-						_react2.default.createElement(
-							"p",
-							null,
-							"-Amy"
 						)
 					)
 				)];
@@ -30425,17 +30423,21 @@
 					{ style: { backgroundColor: '#F0F0EB' } },
 					_react2.default.createElement(
 						"div",
-						{ className: "row" },
+						{ className: "videoContent" },
 						_react2.default.createElement(
 							"div",
-							{ className: "col s10 offset-s1 center-align" },
-							_react2.default.createElement(_search_bar2.default, { onSearchTermChange: videoSearch }),
-							_react2.default.createElement(_video_detail2.default, { video: this.state.selectedVideo }),
-							_react2.default.createElement(_video_list2.default, {
-								onVideoSelect: function onVideoSelect(selectedVideo) {
-									return _this3.setState({ selectedVideo: selectedVideo });
-								},
-								videos: this.state.videos })
+							{ className: "row" },
+							_react2.default.createElement(
+								"div",
+								{ className: "col s10 offset-s1 center-align" },
+								_react2.default.createElement(_search_bar2.default, { onSearchTermChange: videoSearch }),
+								_react2.default.createElement(_video_detail2.default, { video: this.state.selectedVideo }),
+								_react2.default.createElement(_video_list2.default, {
+									onVideoSelect: function onVideoSelect(selectedVideo) {
+										return _this3.setState({ selectedVideo: selectedVideo });
+									},
+									videos: this.state.videos })
+							)
 						)
 					)
 				), horizontalSlider];
@@ -45179,7 +45181,7 @@
 
 
 	// module
-	exports.push([module.id, "h1, h2 {\n  font-family: 'Playfair Display', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Open Sans';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n", ""]);
+	exports.push([module.id, "h1, h2 {\n  font-family: 'Playfair Display', sans-serif;\n  color: black;\n  font-size: 100px;\n  font-weight: bold;\n  letter-spacing: 3px;\n  padding-top: 35px;\n}\n\np {\n\tfont-family: 'Open Sans';\n}\n\n.title {\n  display: flex;\n  flex-flow: row wrap;\n  align-content: center;\n  text-align: center;\n}\n\n.title > * {\n  flex: 1 100%;\n}\n\n.videoContent {\n  padding-top: 50px;\n}", ""]);
 
 	// exports
 

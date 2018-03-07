@@ -22,3 +22,6 @@ p {
   flex: 1 100%;
 }
 
+.videoContent {
+  padding-top: 50px;
+}

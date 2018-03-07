@@ -271,34 +271,34 @@ export default class Main extends React.Component {
 
 	    const horizontalSlides = [
 	      <Slide style={{backgroundColor: '#FFE164'}}>
-	      	<div className="container">
-				<div className="row">                    
-                     <div className="col s10 offset-s1 card white z-depth-2 center-align"
-                         style={{...styles, opacity: this.state.opacity, height: this.state.height}}>
-                        <div className="card-content grey-text">
-                            <span className="card-title">Weekly Challenge</span>
-                            <p>Vow to not complain, criticize, or gossip for a week.<br> 
-                            </br>
-                            <br>If you slip, rally your willpower and keep going. 
-                            </br> Notice how much energy you were spending on <br></br>negative thoughts.</p>
-                        </div>
-            		</div>
-                </div>
-                <div className="row">
-                	<div className="col s10 offset-s1 center-align">
-	                    <h1>Need some inspiration?</h1>
-	                    <h3>Click next to see how the community is doing!<br></br><i className="fa fa-angle-double-right"></i></h3>
-                    </div>
-                </div> 
-            </div>    
+		      <div className="inspirationContent">
+		      	<div className="container">
+					<div className="row">                    
+	                     <div className="col s10 offset-s1 card white z-depth-2 center-align"
+	                         style={{...styles, opacity: this.state.opacity, height: this.state.height}}>
+	                        <div className="card-content grey-text">
+	                            <span className="card-title">Weekly Challenge</span>
+	                            <p>Vow to not complain, criticize, or gossip for a week.<br> 
+	                            </br>
+	                            <br>If you slip, rally your willpower and keep going. 
+	                            </br> Notice how much energy you were spending on <br></br>negative thoughts.</p>
+	                        </div>
+	            		</div>
+	                </div>
+	                <div className="row">
+	                	<div className="col s10 offset-s1 center-align">
+		                    <h1>Need some inspiration?</h1>
+		                    <h3>Click next to see how the community is doing!<br></br><i className="fa fa-angle-double-right"></i></h3>
+	                    </div>
+	                </div> 
+	            </div>
+	          </div>    
 	      </Slide>,
 
 	      <Slide style={{backgroundColor: '#FFE164'}}>
 
 	      		<div className="row">
                     <h1>*Place Holder*</h1>
-                    <br></br>
-                    <p>-Amy</p>
                 </div>
 
 	      </Slide>
@@ -345,7 +345,8 @@ export default class Main extends React.Component {
                 </div>
 
 	      </Slide>,
-	      <Slide style={{backgroundColor: '#F0F0EB'}}>    
+	      <Slide style={{backgroundColor: '#F0F0EB'}}>
+	      	<div className="videoContent">    
                 <div className="row">
                 	<div className="col s10 offset-s1 center-align">
 						<SearchBar onSearchTermChange={videoSearch}/>
@@ -355,6 +356,7 @@ export default class Main extends React.Component {
 						videos={this.state.videos} />
 					</div>
 				</div>
+			</div>
 	      </Slide>,
 	      horizontalSlider
 	    ];
