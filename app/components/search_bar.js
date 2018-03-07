@@ -11,7 +11,7 @@ class SearchBar extends Component {
 // whatever is in render will be pushed to the DOM
 	render() {
 		return (
-			<div className="search-bar">
+			<div className="search-bar center-align">
 				<input 
 				value={this.state.term}
 				onChange={event => this.onInputChange(event.target.value)} 

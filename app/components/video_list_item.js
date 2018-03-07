@@ -9,8 +9,8 @@ const VideoListItem = ({video, onVideoSelect}) => {
 
 	// const video = props.video;
 	return(
-		<li onClick={() => onVideoSelect(video)}className="list-group-item" style={{backgroundColor: "transparent"}}>
-			<div className="video-list media">
+		<li onClick={() => onVideoSelect(video)} style={{backgroundColor: "white"}}>
+			<div className="video-list media white card">
 
 				<div className="media-left">
 					<img className="media-object" src={imageUrl} />

@@ -310,8 +310,8 @@ export default class Main extends React.Component {
 	    const verticalSlides = [
 	      <Slide style={{backgroundColor: '#FFE164' }}>
 	      		<div className="title">
-					<h1>HappyPlace</h1>
-					<p>A place of reflections.</p>
+					<h1>Gratitube</h1>
+					<p>A happy place.</p>
 				</div>
 
 				<div className="row">                    
@@ -348,7 +348,7 @@ export default class Main extends React.Component {
 	      <Slide style={{backgroundColor: '#F0F0EB'}}>
 	      	<div className="videoContent">    
                 <div className="row">
-                	<div className="col s10 offset-s1 center-align">
+                	<div className="col s10 offset-s1">
 						<SearchBar onSearchTermChange={videoSearch}/>
 						<VideoDetail video={this.state.selectedVideo}/>
 						<VideoList 

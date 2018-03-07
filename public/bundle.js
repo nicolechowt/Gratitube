@@ -30348,12 +30348,12 @@
 						_react2.default.createElement(
 							"h1",
 							null,
-							"HappyPlace"
+							"Gratitube"
 						),
 						_react2.default.createElement(
 							"p",
 							null,
-							"A place of reflections."
+							"A happy place."
 						)
 					),
 					_react2.default.createElement(
@@ -30429,7 +30429,7 @@
 							{ className: "row" },
 							_react2.default.createElement(
 								"div",
-								{ className: "col s10 offset-s1 center-align" },
+								{ className: "col s10 offset-s1" },
 								_react2.default.createElement(_search_bar2.default, { onSearchTermChange: videoSearch }),
 								_react2.default.createElement(_video_detail2.default, { video: this.state.selectedVideo }),
 								_react2.default.createElement(_video_list2.default, {
@@ -43826,7 +43826,7 @@
 
 				return _react2.default.createElement(
 					"div",
-					{ className: "search-bar" },
+					{ className: "search-bar center-align" },
 					_react2.default.createElement("input", {
 						value: this.state.term,
 						onChange: function onChange(event) {
@@ -43894,7 +43894,7 @@
 
 		return _react2.default.createElement(
 			"ul",
-			{ className: "col-md-4 list-group" },
+			{ className: "col-md-4 list-group center-align" },
 			videoItems
 		);
 	};
@@ -43932,10 +43932,10 @@
 			"li",
 			{ onClick: function onClick() {
 					return onVideoSelect(video);
-				}, className: "list-group-item", style: { backgroundColor: "transparent" } },
+				}, style: { backgroundColor: "white" } },
 			_react2.default.createElement(
 				"div",
-				{ className: "video-list media" },
+				{ className: "video-list media white card" },
 				_react2.default.createElement(
 					"div",
 					{ className: "media-left" },
@@ -43996,7 +43996,7 @@
 			),
 			_react2.default.createElement(
 				"div",
-				{ className: "details" },
+				{ className: "details white card" },
 				_react2.default.createElement(
 					"div",
 					null,
