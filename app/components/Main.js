@@ -1,11 +1,13 @@
 import _ from "lodash";
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import YTSearch from "youtube-api-search";
 import SearchBar from "./search_bar";
 import VideoList from "./video_list";
 import VideoDetail from "./video_detail";
 import WebFont from "webfontloader";
+import UserSuccessGrid from "./userSuccessGrid";
 import List from "./list";
 import "./main.css";
 import axios from "axios";
@@ -52,7 +54,7 @@ const horizontalNavStyle = {
 
 const horizontalSliderProps = {
   name: 'horizontalSlider1',
-  infinite: true
+  infinite: false
 };
 
 const API_KEY = "AIzaSyDZ9It8jaJQXLWHKCBDEtkmw67tcMQ0sd4";
@@ -63,7 +65,7 @@ const styles ={
 
 WebFont.load({
   google: {
-    families: ['Playfair Display', 'Open Sans']
+    families: ['Playfair Display', 'Open Sans', 'Roboto']
   }
 });
 
@@ -271,36 +273,11 @@ export default class Main extends React.Component {
 
 	    const horizontalSlides = [
 	      <Slide style={{backgroundColor: '#FFE164'}}>
-		      <div className="inspirationContent">
-		      	<div className="container">
-					<div className="row">                    
-	                     <div className="col s10 offset-s1 card white z-depth-2 center-align"
-	                         style={{...styles, opacity: this.state.opacity, height: this.state.height}}>
-	                        <div className="card-content grey-text">
-	                            <span className="card-title">Weekly Challenge</span>
-	                            <p>Vow to not complain, criticize, or gossip for a week.<br> 
-	                            </br>
-	                            <br>If you slip, rally your willpower and keep going. 
-	                            </br> Notice how much energy you were spending on <br></br>negative thoughts.</p>
-	                        </div>
-	            		</div>
-	                </div>
-	                <div className="row">
-	                	<div className="col s10 offset-s1 center-align">
-		                    <h1>Need some inspiration?</h1>
-		                    <h3>Click next to see how the community is doing!<br></br><i className="fa fa-angle-double-right"></i></h3>
-	                    </div>
-	                </div> 
-	            </div>
-	          </div>    
+	      <p></p>
 	      </Slide>,
 
 	      <Slide style={{backgroundColor: '#FFE164'}}>
-
-	      		<div className="row">
-                    <h1>*Place Holder*</h1>
-                </div>
-
+	      <p></p>
 	      </Slide>
 	    ];
 	    horizontalSliderProps.slides = horizontalSlides;
@@ -351,6 +328,27 @@ export default class Main extends React.Component {
 
 	      </Slide>,
 	      <Slide style={{backgroundColor: '#F0F0EB'}}>
+	      		<div className="inspirationContent">
+		      	    <div className="row">
+	                	<div className="col s10 offset-s1 card white z-depth-2 center-align">
+		                    <h1>Weekly challenge</h1>
+		                    <p>Vow to not complain, criticize, or gossip for a week. If you slip, rally your willpower and keep going. 
+	                            Notice how much energy you were spending on negative thoughts.</p>
+	                    </div>
+	                </div>
+                </div> 
+	      </Slide>,
+
+		<Slide style={{backgroundColor: '#F0F0EB'}}>
+		  		<div className="photoContent">
+		  	        <div className="row center-align">
+		                <p>#noBadDay</p>
+		                <UserSuccessGrid/>
+		            </div>
+		    </div>
+		</Slide>,
+
+	      <Slide style={{backgroundColor: '#F0F0EB'}}>
 	      	<div className="videoContent">    
                 <div className="row">
                 	<div className="col s10 offset-s1">
@@ -363,14 +361,16 @@ export default class Main extends React.Component {
 				</div>
 			</div>
 	      </Slide>,
-	      horizontalSlider
+	      // horizontalSlider
 	    ];
 	    fullPageOptions.slides = verticalSlides;
 
 
 		return(
-			<Fullpage onSlideChangeStart={this.onSlideChangeStart} onSlideChangeEnd={this.onSlideChangeEnd} {...fullPageOptions}>
-			</Fullpage>
+			<MuiThemeProvider>
+				<Fullpage onSlideChangeStart={this.onSlideChangeStart} onSlideChangeEnd={this.onSlideChangeEnd} {...fullPageOptions}>
+				</Fullpage>
+			</MuiThemeProvider>
 		);
 	}
 }

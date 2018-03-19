@@ -26,6 +26,16 @@ p {
   padding-top: 50px;
 }
 
+.photoContent{
+  padding-top: 10px;
+}
+
 .myWrapper {
   height: 100%;
+}
+
+p.test1 {
+    width: 140px; 
+    border: 1px solid #000000;
+    word-break: keep-all;
 }
